@@ -33,11 +33,7 @@ namespace JMI.General
         /// </param>
         protected void OnPropertyChanged([CallerMemberName] string propName = null)
         {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
 
         /// <summary>
