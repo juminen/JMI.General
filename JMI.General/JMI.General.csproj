@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionResult.cs" />
+    <Compile Include="IO\DirectoryCrawler.cs" />
     <Compile Include="ListSelection\ISelectionCollection.cs" />
     <Compile Include="ListSelection\ISelectionCollectionItem.cs" />
     <Compile Include="ListSelection\SelectionCollectionEventArgs.cs" />

@@ -4,8 +4,24 @@ using System.Text;
 
 namespace JMI.General
 {
+    /// <summary>
+    /// This class is used to communicate about method result.<br/>
+    /// Result is put in property <see cref="Result"/>.<br/>
+    /// If result was ok property <see cref="Successful"/> can be set true (default value is true).<br/>
+    /// If something fails, reason (string) can can be added by using method <see cref="AddFailReason(string)"/>.
+    /// This sets the property <see cref="Successful"/> to false.<br/>
+    /// Reasons can be added also using method <see cref="AddReason(string)"/>.<br/><br/>
+    /// Summary (string) from the reasons can get by using methods <see cref="GetComments(string)"/> 
+    /// and <see cref="GetComments"/>.
+    /// </summary>
+    /// <typeparam name="T">Any kind of object</typeparam>
     public class ActionResult<T> : ObservableObject
     {
+        #region constructors
+       /// <summary>
+       /// Default constructor.
+       /// </summary>
+       /// <remarks>Property <see cref="Successful"/> is set to true.</remarks>
         public ActionResult()
         {
             successful = true;
@@ -13,6 +29,13 @@ namespace JMI.General
             Comments = new ReadOnlyObservableCollection<string>(comments);
         }
 
+        public ActionResult(T result) : this()
+        {
+            Result = result;
+        }
+        #endregion
+
+        #region properties
         private T result;
         public T Result
         {
@@ -29,7 +52,9 @@ namespace JMI.General
 
         private ObservableCollection<string> comments;
         public ReadOnlyObservableCollection<string> Comments;
+        #endregion
 
+        #region methods
         /// <summary>
         /// Adds string to Comments and marks successful to false
         /// </summary>
@@ -78,6 +103,19 @@ namespace JMI.General
         {
             return GetComments(Environment.NewLine);
         }
+        #endregion
+
+        #region events
+        #endregion
+
+        #region event handlers
+        #endregion
+
+
+
+
+
+
 
     }
 }
