@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace JMI.General.Tree
@@ -76,6 +73,11 @@ namespace JMI.General.Tree
         }
 
         public abstract void LoadRootNodes();
+
+        protected void ClearTree()
+        {
+            RemoveFromTree(allNodes.ToList());
+        }
 
         protected void AddToTree(ITreeItem node)
         {
