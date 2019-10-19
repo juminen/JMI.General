@@ -7,7 +7,7 @@ namespace JMI.General.ListSelection
 {
     public interface ISelectionCollection<T> where T : ISelectionCollectionItem
     {
-        ICollectionView AllItems { get; }
+        ListCollectionView AllItems { get; }
         ListCollectionView CheckedItems { get; }
         ListCollectionView SelectedItems { get; }
 

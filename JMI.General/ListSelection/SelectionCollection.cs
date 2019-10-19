@@ -13,7 +13,7 @@ namespace JMI.General.ListSelection
         public SelectionCollection()
         {
             allItems = new ObservableCollection<T>();
-            AllItems = new CollectionViewSource() { Source = allItems }.View;
+            AllItems = new ListCollectionView(allItems);
 
             CheckedItems = new ListCollectionView(allItems)
             {
@@ -34,7 +34,7 @@ namespace JMI.General.ListSelection
         #region properties
         protected ObservableCollection<T> allItems;
 
-        public ICollectionView AllItems { get; protected set; }
+        public ListCollectionView AllItems { get; protected set; }
         //ListCollectionView is used because live filtering.
         //Other methods (ICollectionView and others) does not work.
         //ListCollectionView contains all required properties and methods.
