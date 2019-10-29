@@ -1,0 +1,80 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <!--<ResourceDictionary
+            Source="pack://application:,,,/JM.PhotoArchive.UI;component/Resources/Colors.xaml" />-->
+    </ResourceDictionary.MergedDictionaries>
+    <!--https://stackoverflow.com/questions/5066450/wpf-how-to-make-headeredcontentcontrol-content-fit-height-->
+    <!--Problem here is HeaderedContentControl uses StackPanel internally to layout header and content.
+    To fix that, use a Grid instead or re-template HeaderedContentControl to use Grid.-->
+    <ControlTemplate
+        x:Key="HeaderControlBorderGridTemplate"
+        TargetType="HeaderedContentControl">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="Auto" />
+                <RowDefinition
+                    Height="*" />
+            </Grid.RowDefinitions>
+            <Border
+                Grid.Row="0"
+                Background="{TemplateBinding Background}"
+                CornerRadius="0,20,0,0">
+                <ContentControl
+                    Content="{TemplateBinding Header}" />
+            </Border>
+            <Border
+                Grid.Row="1"
+                BorderBrush="{TemplateBinding Background}"
+                BorderThickness="3,0,3,3">
+                <ContentControl
+                    Content="{TemplateBinding Content}" />
+            </Border>            
+        </Grid>
+    </ControlTemplate>
+
+    <ControlTemplate
+        x:Key="HeaderControlBorderStackTemplate"
+        TargetType="HeaderedContentControl">
+        <StackPanel>
+            <Border
+                Background="{TemplateBinding Background}"
+                CornerRadius="0,20,0,0">
+                <ContentControl
+                    Content="{TemplateBinding Header}" />
+            </Border>
+            <Border
+                BorderBrush="{TemplateBinding Background}"
+                BorderThickness="3,0,3,3">
+                <ContentControl
+                    Content="{TemplateBinding Content}" />
+            </Border>
+        </StackPanel>
+    </ControlTemplate>
+
+
+    <ControlTemplate
+        x:Key="TabItemTemplate"
+        TargetType="{x:Type TabItem}">
+        <Border
+            Name="Border"
+            Background="{TemplateBinding Background}"
+            CornerRadius="0,10,0,0">
+            <ContentPresenter
+                ContentSource="Header"
+                Margin="10,0,20,0"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger
+                Property="IsSelected"
+                Value="True">
+                <Setter
+                    TargetName="Border"
+                    Property="Background"
+                    Value="{StaticResource ApplicationColor}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+</ResourceDictionary>

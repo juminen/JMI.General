@@ -1,9 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 
-namespace JMI.General.ListSelection
+namespace JMI.General.VM.ListSelection
 {
-    public interface ISelectionCollectionItem : INotifyPropertyChanged
+    public interface ISelectionCollectionItemViewModel : IDisposable
     {
         /// <summary>
         /// Text displayed in lists
@@ -15,12 +14,5 @@ namespace JMI.General.ListSelection
         string Id { get; }
         bool IsChecked { get; set; }
         bool IsSelected { get; set; }
-
-        event EventHandler Checked;
-        event EventHandler Selected;
-        event EventHandler UnChecked;
-        event EventHandler UnSelected;
-
-        void Dispose();
     }
 }

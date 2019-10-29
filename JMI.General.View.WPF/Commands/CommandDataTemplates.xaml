@@ -1,0 +1,67 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+            Source="pack://application:,,,/JMI.General.View.WPF;component/Resources/ControlTemplates.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Command templates -->
+    <!-- Button -->
+    <DataTemplate
+        x:Key="CommandButtonTemplate">
+        <Button
+            Content="{Binding DisplayName}"
+            Command="{Binding Command}" />
+    </DataTemplate>
+
+    <!-- Hyperlink -->
+    <DataTemplate
+        x:Key="CommandHyperlinkTemplate">
+        <TextBlock>
+            <Hyperlink
+                Command="{Binding Command}">
+                <TextBlock
+                    Text="{Binding DisplayName}" />
+            </Hyperlink>
+    </TextBlock>
+    </DataTemplate>
+
+    <!-- CommandGroup templates -->
+    <!-- Button group -->
+    <DataTemplate
+        x:Key="CommandGroupButtonTemplate">
+        <HeaderedContentControl
+            Template="{StaticResource HeaderControlBorderStackTemplate}">
+            <HeaderedContentControl.Header>
+                <Label
+                    Content="{Binding DisplayName}" />
+            </HeaderedContentControl.Header>
+            <HeaderedContentControl.Content>
+                <ItemsControl
+                    ItemsSource="{Binding Commands}"
+                    ItemTemplate="{StaticResource CommandButtonTemplate}">
+                </ItemsControl>
+            </HeaderedContentControl.Content>
+        </HeaderedContentControl>
+    </DataTemplate>
+
+    <!-- Hyperlink group -->
+    <DataTemplate
+        x:Key="CommandGroupHyperlinkTemplate">
+        <HeaderedContentControl
+            Template="{StaticResource HeaderControlBorderStackTemplate}">
+            <HeaderedContentControl.Header>
+                <Label
+                    Content="{Binding DisplayName}" />
+            </HeaderedContentControl.Header>
+            <HeaderedContentControl.Content>
+                <ItemsControl
+                    ItemsSource="{Binding Commands}"
+                    ItemTemplate="{StaticResource CommandHyperlinkTemplate}">
+                </ItemsControl>
+            </HeaderedContentControl.Content>
+        </HeaderedContentControl>
+    </DataTemplate>
+
+</ResourceDictionary>
