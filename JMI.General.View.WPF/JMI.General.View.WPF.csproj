@@ -54,6 +54,9 @@
     <Compile Include="ListSelection\SelectionCollectionView.xaml.cs">
       <DependentUpon>SelectionCollectionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Logging\LogView.xaml.cs">
+      <DependentUpon>LogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +77,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ListSelection\SelectionCollectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Logging\LogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -98,5 +105,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

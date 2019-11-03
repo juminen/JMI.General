@@ -1,0 +1,96 @@
+﻿<UserControl
+    x:Class="JMI.General.View.WPF.Logging.LogView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:JMI.General.View.WPF.Logging"
+    xmlns:commands="clr-namespace:JMI.General.View.WPF.Commands"
+    mc:Ignorable="d"
+    d:DesignHeight="450"
+    d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary
+            Source="pack://application:,,,/JMI.General.View.WPF;component/Resources/ControlTemplates.xaml" />
+    </UserControl.Resources>
+    <HeaderedContentControl
+        Template="{StaticResource HeaderControlBorderGridTemplate}">
+        <HeaderedContentControl.Header>
+            <Label
+                Content="Log" />
+        </HeaderedContentControl.Header>
+        <HeaderedContentControl.Content>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="Auto" />
+                    <ColumnDefinition
+                        Width="*" />
+                </Grid.ColumnDefinitions>
+                <commands:CommandGroupButtonListView
+                    Grid.Column="0" />
+                <DataGrid
+                    x:Name="LogGrid"
+                    Grid.Column="1"
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
+                    CanUserSortColumns="False"
+                    CanUserReorderColumns="False"
+                    IsReadOnly="True"
+                    GridLinesVisibility="None"
+                    MinHeight="50"
+                    ItemsSource="{Binding Messages}">
+                    <DataGrid.RowStyle>
+                        <Style
+                            TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding Status}"
+                                    Value="Normal">
+                                    <Setter
+                                        Property="Background"
+                                        Value="White" />
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding Status}"
+                                    Value="Warning">
+                                    <Setter
+                                        Property="Background"
+                                        Value="Yellow" />
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding Status}"
+                                    Value="Error">
+                                    <Setter
+                                        Property="Background"
+                                        Value="Red" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Binding="{Binding Time}"
+                            Header="Time" />
+                        <DataGridTextColumn
+                            Binding="{Binding Status}"
+                            Header="Status" />
+                        <DataGridTextColumn
+                            Binding="{Binding DisplayText}"
+                            Width="*"
+                            Header="Message">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style>
+                                    <Setter
+                                        Property="TextBlock.TextWrapping"
+                                        Value="Wrap" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </HeaderedContentControl.Content>
+    </HeaderedContentControl>
+</UserControl>

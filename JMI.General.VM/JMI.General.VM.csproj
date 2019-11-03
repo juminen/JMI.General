@@ -43,6 +43,8 @@
     <Compile Include="ListSelection\ISelectionCollectionItemViewModel.cs" />
     <Compile Include="ListSelection\SelectionCollectionItemViewModel.cs" />
     <Compile Include="ListSelection\SelectionCollectionViewModel.cs" />
+    <Compile Include="Logging\LogViewModel.cs" />
+    <Compile Include="Logging\LogMessageViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -51,5 +53,6 @@
       <Name>JMI.General</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
