@@ -80,9 +80,23 @@ namespace JMI.General.Sorting
 
                 if (char.IsDigit(space1[0]) && char.IsDigit(space2[0]))
                 {
-                    int thisNumericChunk = int.Parse(str1);
-                    int thatNumericChunk = int.Parse(str2);
-                    result = thisNumericChunk.CompareTo(thatNumericChunk);
+                    //int thisNumericChunk = int.Parse(str1);
+                    //int thatNumericChunk = int.Parse(str2);
+                    //result = thisNumericChunk.CompareTo(thatNumericChunk);
+                    try
+                    {
+                        long thisNumericChunk = long.Parse(str1);
+                        long thatNumericChunk = long.Parse(str2);
+                        result = thisNumericChunk.CompareTo(thatNumericChunk);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        System.Console.WriteLine($"str1: {str1}");
+                        System.Console.WriteLine($"str2: {str2}");
+                        System.Console.WriteLine($"ex: {ex.Message} \n {ex.StackTrace}");
+                        result = 0;
+                    }
+                    
                 }
                 else
                 {

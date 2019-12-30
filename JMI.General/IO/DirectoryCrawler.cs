@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Security;
+using System.Security.AccessControl;
 
 namespace JMI.General.IO
 {
@@ -66,10 +68,28 @@ namespace JMI.General.IO
                     }
                     else
                     {
+                        if (subDir.FullName.Equals(@"C:\windows", StringComparison.OrdinalIgnoreCase))
+                        {
+                            addToList = false;
+                        }
+
                         if (subDir.Attributes.HasFlag(FileAttributes.Hidden) && !listHidden)
                         {
                             addToList = false;
                         }
+
+                        //If you do not have at a minimum read-only permission to the directory, 
+                        //the Exists method will return false.
+                        if (!Directory.Exists(subDir.FullName))
+                        {
+                            addToList = false;
+                        }
+
+                        if (!CanRead(subDir.FullName))
+                        {
+                            addToList = false;
+                        }
+
                     }
                     if (addToList) folders.Add(subDir);
                 }
@@ -86,12 +106,152 @@ namespace JMI.General.IO
             {
                 actionResult.AddFailReason($"No access to directory '{path}', exception message: {ex.Message}");
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                actionResult.AddFailReason($"No access to directory '{path}', exception message: {ex.Message}");
+            }
             catch (Exception ex)
             {
                 actionResult.AddFailReason($"Unknown exception getting directories, path was: '{path}', exception message: {ex.Message}");
                 actionResult.AddReason(ex.StackTrace);
             }
             return actionResult;
+        }
+
+        public static ActionResult<IEnumerable<DirectoryInfo>> GetSubFolders2(string path, bool listHidden)
+        {
+            List<DirectoryInfo> folders = new List<DirectoryInfo>();
+            ActionResult<IEnumerable<DirectoryInfo>> actionResult = new ActionResult<IEnumerable<DirectoryInfo>>(folders);
+            DirectoryInfo directory;
+            try
+            {
+                directory = new DirectoryInfo(path);
+            }
+            catch (ArgumentNullException ex)
+            {
+                //path is null.
+                Debug.WriteLine(ex.Message);
+                actionResult.AddFailReason(ex.Message);
+                return actionResult;
+            }
+            catch (SecurityException ex)
+            {
+                //The caller does not have the required permission.
+                Debug.WriteLine($"Path '{ path }': { ex.Message }");
+                actionResult.AddFailReason($"Path '{ path }': { ex.Message }");
+                return actionResult;
+            }
+            catch (ArgumentException ex)
+            {
+                //path contains invalid characters such as ", <, >, or |.
+                actionResult.AddFailReason($"Path '{ path }': { ex.Message }");
+                return actionResult;
+            }
+            catch (PathTooLongException ex)
+            {
+                //The specified path, file name, or both exceed the system - defined maximum length.
+                actionResult.AddFailReason($"Path '{ path }': { ex.Message }");
+                return actionResult;
+            }
+            catch (Exception ex)
+            {
+                actionResult.AddFailReason(ex.Message);
+                return actionResult;
+            }
+
+            //if (!directory.Exists)
+            //{
+            //    Debug.WriteLine($"Path '{ path }' does not exists.");
+            //    return actionResult;
+            //}
+
+
+            try
+            {
+                
+                foreach (DirectoryInfo subDir in directory.EnumerateDirectories())
+                {
+                    bool addToList = true;
+                    //Check if directory is system or hidden directory
+                    if (subDir.Attributes.HasFlag(FileAttributes.System))
+                    {
+                        addToList = false;
+                    }
+                    else
+                    {
+                        if (subDir.FullName.Equals(@"C:\windows", StringComparison.OrdinalIgnoreCase))
+                        {
+                            addToList = false;
+                        }
+
+                        if (subDir.Attributes.HasFlag(FileAttributes.Hidden) && !listHidden)
+                        {
+                            addToList = false;
+                        }
+
+                        //If you do not have at a minimum read-only permission to the directory, 
+                        //the Exists method will return false.
+                        if (!Directory.Exists(subDir.FullName))
+                        {
+                            addToList = false;
+                        }
+
+                        if (!CanRead(subDir.FullName))
+                        {
+                            addToList = false;
+                        }
+
+                    }
+                    if (addToList) folders.Add(subDir);
+                }
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                actionResult.AddFailReason($"Directory '{path}' not found, exception message: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                actionResult.AddFailReason($"Path '{path}' for folders is wrong, exception message: {ex.Message}");
+            }
+            catch (SecurityException ex)
+            {
+                actionResult.AddFailReason($"No access to directory '{path}', exception message: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                actionResult.AddFailReason($"No access to directory '{path}', exception message: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                actionResult.AddFailReason($"Unknown exception getting directories, path was: '{path}', exception message: {ex.Message}");
+                actionResult.AddReason(ex.StackTrace);
+            }
+            return actionResult;
+        }
+
+
+        private static bool CanRead(string path)
+        {
+            var readAllow = false;
+            var readDeny = false;
+            var accessControlList = Directory.GetAccessControl(path);
+            if (accessControlList == null)
+                return false;
+            var accessRules = accessControlList.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
+            if (accessRules == null)
+                return false;
+
+            foreach (FileSystemAccessRule rule in accessRules)
+            {
+                if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read) continue;
+
+                if (rule.AccessControlType == AccessControlType.Allow)
+                    readAllow = true;
+                else if (rule.AccessControlType == AccessControlType.Deny)
+                    readDeny = true;
+            }
+
+            return readAllow && !readDeny;
         }
 
         /// <summary>

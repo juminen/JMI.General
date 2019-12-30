@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
 
-namespace JMI.General.Tree
+namespace JMI.General.Trees
 {
     public abstract class TreeItem : ObservableObject, ITreeItem
     {

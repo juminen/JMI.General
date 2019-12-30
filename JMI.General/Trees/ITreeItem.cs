@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Data;
 
-namespace JMI.General.Tree
+namespace JMI.General.Trees
 {
     public interface ITreeItem
     {

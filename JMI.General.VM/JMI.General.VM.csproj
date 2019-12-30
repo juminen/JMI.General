@@ -40,6 +40,18 @@
   <ItemGroup>
     <Compile Include="Commands\CommandGroupViewModel.cs" />
     <Compile Include="Commands\CommandViewModel.cs" />
+    <Compile Include="IO\Picker\DirectoryPickerViewModel.cs" />
+    <Compile Include="IO\DirectoryTreeViewModel.cs" />
+    <Compile Include="IO\DriveTreeItemViewModel.cs" />
+    <Compile Include="IO\FileBrowserViewModel.cs" />
+    <Compile Include="IO\FileListItemViewModel.cs" />
+    <Compile Include="IO\FileListViewModel.cs" />
+    <Compile Include="IO\FolderListItemViewModel.cs" />
+    <Compile Include="IO\FolderListViewModel.cs" />
+    <Compile Include="IO\FolderTreeItemViewModel.cs" />
+    <Compile Include="IO\Picker\OpenSingleFilePickerViewModel.cs" />
+    <Compile Include="IO\Picker\DefaultPickers.cs" />
+    <Compile Include="IO\Picker\SaveFilePickerViewModel.cs" />
     <Compile Include="ListSelection\ISelectionCollectionItemViewModel.cs" />
     <Compile Include="ListSelection\SelectionCollectionItemViewModel.cs" />
     <Compile Include="ListSelection\SelectionCollectionViewModel.cs" />
@@ -53,6 +65,8 @@
       <Name>JMI.General</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Application\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

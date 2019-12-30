@@ -1,7 +1,7 @@
 ﻿using JMI.General.Sorting;
 using System.Collections;
 
-namespace JMI.General.Tree
+namespace JMI.General.Trees
 {
     /// <summary>
     /// Compares tree items with their displaynames.

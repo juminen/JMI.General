@@ -2,7 +2,7 @@
 
 namespace JMI.General.VM.Logging
 {
-    public class LogMessageViewModel //: SelectionCollectionItem
+    public class LogMessageViewModel
     {
         public LogMessageViewModel(ILogMessage message, string timeFormat)
         {
@@ -14,25 +14,6 @@ namespace JMI.General.VM.Logging
         private readonly string timeFormat;
         public string Time { get { return msg.Time.ToString(timeFormat); } }
         public string DisplayText => msg.Message;
-
-        public string Status
-        {
-            get
-            {
-                if (msg.Status == LogMessageStatus.Normal)
-                {
-                    return "Normal";
-                }
-                else if (msg.Status == LogMessageStatus.Error)
-                {
-                    return "Error";
-                }
-                else if (msg.Status == LogMessageStatus.Warning)
-                {
-                    return "Warning";
-                }
-                return "Unknown status";
-            }
-        }
+        public string Status { get { return msg.Status.DisplayText; } }
     }
 }

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace JMI.General.Tree
+namespace JMI.General.Trees
 {
     public abstract class Tree : ObservableObject, ITree
     {
@@ -73,6 +74,7 @@ namespace JMI.General.Tree
         }
 
         public abstract void LoadRootNodes();
+        public abstract Task LoadRootNodesAsync();
 
         protected void ClearTree()
         {

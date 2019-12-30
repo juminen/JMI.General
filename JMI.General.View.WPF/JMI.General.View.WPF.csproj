@@ -35,6 +35,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +51,24 @@
     </Compile>
     <Compile Include="Commands\CommandGroupListView.xaml.cs">
       <DependentUpon>CommandGroupListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IO\DirectoryTreeView.xaml.cs">
+      <DependentUpon>DirectoryTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IO\FileBrowserView.xaml.cs">
+      <DependentUpon>FileBrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IO\FileListView.xaml.cs">
+      <DependentUpon>FileListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IO\FolderListView.xaml.cs">
+      <DependentUpon>FolderListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IO\Picker\FilePicker.xaml.cs">
+      <DependentUpon>FilePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IO\Picker\DirectoryPickerView.xaml.cs">
+      <DependentUpon>DirectoryPickerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ListSelection\SelectionCollectionView.xaml.cs">
       <DependentUpon>SelectionCollectionView.xaml</DependentUpon>
@@ -75,6 +94,30 @@
     <Page Include="Commands\CommandDataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="IO\DirectoryTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IO\FileBrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IO\FileListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IO\FolderListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IO\Picker\FilePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IO\Picker\DirectoryPickerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ListSelection\SelectionCollectionView.xaml">
       <SubType>Designer</SubType>
@@ -105,6 +148,15 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\JMI.General.VM\JMI.General.VM.csproj">
+      <Project>{a6b55b78-ebb2-47a2-b9fc-2e2f9c58194f}</Project>
+      <Name>JMI.General.VM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JMI.General\JMI.General.csproj">
+      <Project>{4612b1db-089a-4693-8a50-ad2d42d8b765}</Project>
+      <Name>JMI.General</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

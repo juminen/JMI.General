@@ -1,0 +1,54 @@
+﻿<UserControl
+    x:Class="JMI.General.View.WPF.IO.DirectoryTreeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:vm="clr-namespace:JMI.General.VM.IO;assembly=JMI.General.VM"
+    xmlns:local="clr-namespace:JMI.General.View.WPF.IO"
+    mc:Ignorable="d"
+    d:DesignHeight="400"
+    d:DesignWidth="200">
+    <UserControl.Resources>
+        <ResourceDictionary
+            Source="pack://application:,,,/JMI.General.View.WPF;component/Resources/ControlTemplates.xaml" />
+    </UserControl.Resources>
+    <HeaderedContentControl
+        Template="{StaticResource HeaderControlBorderGridTemplate}">
+        <HeaderedContentControl.Header>
+            <Label
+                Content="Directory tree" />
+        </HeaderedContentControl.Header>
+        <HeaderedContentControl.Content>
+            <TreeView
+                ItemsSource="{Binding RootNodes, UpdateSourceTrigger=PropertyChanged}">
+                <TreeView.ItemContainerStyle>
+                    <Style
+                        TargetType="{x:Type TreeViewItem}">
+                        <Setter
+                            Property="IsSelected"
+                            Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter
+                            Property="IsExpanded"
+                            Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate
+                        DataType="{x:Type vm:DriveTreeItemViewModel}"
+                        ItemsSource="{Binding Children, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBlock
+                            FontWeight="Bold"
+                            Text="{Binding DisplayName}" />
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate
+                        DataType="{x:Type vm:FolderTreeItemViewModel}"
+                        ItemsSource="{Binding Children, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBlock
+                            Text="{Binding DisplayName}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </HeaderedContentControl.Content>
+    </HeaderedContentControl>
+</UserControl>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JMI.General.Tree
+namespace JMI.General.Trees
 {
     public class TreeItemChildrenAddEventArgs : EventArgs
     {

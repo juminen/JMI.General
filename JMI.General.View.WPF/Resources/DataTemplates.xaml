@@ -1,17 +1,35 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:pickerVM="clr-namespace:JMI.General.VM.IO.Picker;assembly=JMI.General.VM"
+    xmlns:pickerView="clr-namespace:JMI.General.View.WPF.IO.Picker">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
             Source="ControlTemplates.xaml" />
     </ResourceDictionary.MergedDictionaries>
+
+    
+    <!--<DataTemplate
+        DataType="{x:Type pickerVM:DirectoryPickerViewModel}">
+        <pickerView:DirectoryPickerView />
+    </DataTemplate>
+    
+    <DataTemplate
+        DataType="{x:Type pickerVM:OpenSingleFilePickerViewModel}">
+        <pickerView:OpenSingleFilePickerView />
+    </DataTemplate>
+    
+    <DataTemplate
+        DataType="{x:Type pickerVM:SaveFilePickerViewModel}">
+        <pickerView:SaveFilePickerView />
+    </DataTemplate>
 
     <DataTemplate
         x:Key="CommandButtonTemplate">
         <Button
             Content="{Binding DisplayName}"
             Command="{Binding Command}" />
-    </DataTemplate>
+    </DataTemplate>-->
 
     <DataTemplate
         x:Key="CommandHyperlinkTemplate">
