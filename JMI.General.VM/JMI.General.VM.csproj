@@ -38,6 +38,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\BaseApplicationViewModel.cs" />
     <Compile Include="Commands\CommandGroupViewModel.cs" />
     <Compile Include="Commands\CommandViewModel.cs" />
     <Compile Include="IO\Picker\DirectoryPickerViewModel.cs" />
@@ -65,8 +66,6 @@
       <Name>JMI.General</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Application\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
