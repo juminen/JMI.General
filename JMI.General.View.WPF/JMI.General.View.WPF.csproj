@@ -64,6 +64,9 @@
     <Compile Include="IO\FolderListView.xaml.cs">
       <DependentUpon>FolderListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IO\Picker\DirectoryPicker.xaml.cs">
+      <DependentUpon>DirectoryPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IO\Picker\FilePicker.xaml.cs">
       <DependentUpon>FilePicker.xaml</DependentUpon>
     </Compile>
@@ -108,6 +111,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="IO\FolderListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IO\Picker\DirectoryPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
