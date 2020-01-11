@@ -21,6 +21,7 @@
             Grid.Column="0"
             Content="{Binding Label,
             UpdateSourceTrigger=PropertyChanged,
+            Mode=TwoWay,
             FallbackValue='Path:'}" />
         <TextBox
             Grid.Column="1"
@@ -31,6 +32,7 @@
             Click="Button_Click"
             Content="{Binding ButtonLabel, 
             UpdateSourceTrigger=PropertyChanged,
+            Mode=TwoWay,
             FallbackValue='...'}">
         </Button>
     </Grid>

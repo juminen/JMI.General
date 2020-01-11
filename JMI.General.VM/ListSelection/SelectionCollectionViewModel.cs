@@ -10,11 +10,20 @@ using System.Windows.Data;
 
 namespace JMI.General.VM.ListSelection
 {
+    /// <summary>
+    /// Abstract base class for selection collection viewmodels
+    /// </summary>
+    /// <typeparam name="T">Type of the model list item</typeparam>
+    /// <typeparam name="TViewModel">Type of the viewmodel list item</typeparam>
     public abstract class SelectionCollectionViewModel<T, TViewModel> : ObservableObject
         where T : ISelectionCollectionItem
         where TViewModel : ISelectionCollectionItemViewModel
     {
         #region constructors
+        /// <summary>
+        /// Default constuctor
+        /// </summary>
+        /// <param name="selectionCollection">Model selection collection containing list items</param>
         public SelectionCollectionViewModel(ISelectionCollection<T> selectionCollection)
         {
             collection = selectionCollection ?? throw new ArgumentNullException(nameof(selectionCollection) + " can not be null");
@@ -32,12 +41,27 @@ namespace JMI.General.VM.ListSelection
         #endregion
 
         #region properties
+        /// <summary>
+        /// Collection for selection collection items
+        /// </summary>
         protected readonly ISelectionCollection<T> collection;
+        /// <summary>
+        /// Collection for selection collection viewmodel items
+        /// </summary>
         protected ObservableCollection<TViewModel> allItems;
+        /// <summary>
+        /// Collection for the list commands.
+        /// </summary>
         protected IList<CommandGroupViewModel> commandGroupsList;
+        /// <summary>
+        ///  Collectionview for all selection collection list items
+        /// </summary>
         public ListCollectionView AllItems { get; protected set; }
 
         private bool showIdColumn;
+        /// <summary>
+        /// For toggling Id column visibility
+        /// </summary>
         public bool ShowIdColumn
         {
             get { return showIdColumn; }
@@ -45,6 +69,9 @@ namespace JMI.General.VM.ListSelection
         }
 
         private string displayTextColumnHeader;
+        /// <summary>
+        /// Text to display in column header
+        /// </summary>
         public string DisplayTextColumnHeader
         {
             get { return displayTextColumnHeader; }
@@ -53,17 +80,20 @@ namespace JMI.General.VM.ListSelection
         #endregion
 
         #region commands
+        /// <summary>
+        /// Collection of command groups
+        /// </summary>
         public ReadOnlyCollection<CommandGroupViewModel> CommandGroups { get; private set; }
 
         /// <summary>
-        /// Creates following commands:</br>
-        /// - Check all,</br>
-        /// - Uncheck all,</br>
-        /// - Invert Checked,</br>
-        /// - Remove checked,</br> 
-        /// - Check selected,</br>
-        /// - Uncheck selected and</br>
-        /// - Clear list
+        /// Creates following commands:
+        /// <para/>- Check all,
+        /// <para/>- Uncheck all,
+        /// <para/>- Invert Checked,
+        /// <para/>- Remove checked,
+        /// <para/>- Check selected,
+        /// <para/>- Uncheck selected and
+        /// <para/>- Clear list
         /// </summary>
         /// <returns></returns>
         private IList<CommandViewModel> CreateCommands()
@@ -140,10 +170,15 @@ namespace JMI.General.VM.ListSelection
             list.Add(group);
             return list;
         }
-            
+
         #endregion
 
         #region methods
+        /// <summary>
+        /// Abstract method for creating list item viewmodel
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         protected abstract TViewModel CreateViewModel(T item);
 
         /// <summary>
@@ -155,7 +190,7 @@ namespace JMI.General.VM.ListSelection
         }
 
         /// <summary>
-        /// Default sorting for <see cref="AllItems"/>.</br>
+        /// Default sorting for <see cref="AllItems"/>. 
         /// Uses <see cref="AlphanumComparatorFast"/> on <see cref="ISelectionCollectionItemViewModel.DisplayText"/>.
         /// </summary>
         public virtual void SetSorting()

@@ -3,9 +3,15 @@ using System.Windows;
 
 namespace JMI.General.VM.Application
 {
-    public abstract class BaseApplicationViewModel : ObservableObject
+    /// <summary>
+    /// Base class for application view
+    /// </summary>
+    public class BaseApplicationViewModel : ObservableObject
     {
         #region constructors
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public BaseApplicationViewModel()
         {
             Log = new LogViewModel();
@@ -13,10 +19,21 @@ namespace JMI.General.VM.Application
         #endregion
 
         #region properties
-        public abstract string WindowTitle { get; }
+        private string windowTitle;
+        /// <summary>
+        /// Text displayed in window title.
+        /// </summary>
+        public string WindowTitle
+        {
+            get { return windowTitle; }
+            protected set { SetProperty(ref windowTitle, value); }
+        }
 
         #region window settings
         private double windowHeight;
+        /// <summary>
+        /// For storing/restoring window height
+        /// </summary>
         public double WindowHeight
         {
             get { return windowHeight; }
@@ -24,6 +41,9 @@ namespace JMI.General.VM.Application
         }
 
         private double windowWidht;
+        /// <summary>
+        /// For storing/restoring window widht
+        /// </summary>
         public double WindowWidht
         {
             get { return windowWidht; }
@@ -31,6 +51,9 @@ namespace JMI.General.VM.Application
         }
 
         private double windowTop;
+        /// <summary>
+        /// For storing/restoring window top location
+        /// </summary>
         public double WindowTop
         {
             get { return windowTop; }
@@ -38,6 +61,9 @@ namespace JMI.General.VM.Application
         }
 
         private double windowLeft;
+        /// <summary>
+        /// For storing/restoring window left location
+        /// </summary>
         public double WindowLeft
         {
             get { return windowLeft; }
@@ -45,6 +71,9 @@ namespace JMI.General.VM.Application
         }
 
         private WindowState windowState;
+        /// <summary>
+        /// For storing/restoring window state
+        /// </summary>
         public WindowState WindowState
         {
             get { return windowState; }
@@ -52,6 +81,9 @@ namespace JMI.General.VM.Application
         }
 
         private GridLength rowHeightTop;
+        /// <summary>
+        /// For storing/restoring top row height (main window part)
+        /// </summary>
         public GridLength RowHeightTop
         {
             get { return rowHeightTop; }
@@ -59,6 +91,9 @@ namespace JMI.General.VM.Application
         }
 
         private GridLength rowHeightBottom;
+        /// <summary>
+        /// For storing/restoring bottom row height (log window part)
+        /// </summary>
         public GridLength RowHeightBottom
         {
             get { return rowHeightBottom; }
@@ -67,6 +102,9 @@ namespace JMI.General.VM.Application
         #endregion window settings
 
         private LogViewModel log;
+        /// <summary>
+        /// For logging part of the window
+        /// </summary>
         public LogViewModel Log
         {
             get { return log; }
