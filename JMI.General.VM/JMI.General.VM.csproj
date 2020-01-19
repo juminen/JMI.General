@@ -39,6 +39,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\BaseApplicationViewModel.cs" />
+    <Compile Include="Application\CloseViewModel.cs" />
+    <Compile Include="Application\TabViewModel.cs" />
     <Compile Include="CED\CreateNewItemViewModel.cs" />
     <Compile Include="CED\DeleteItemViewModel.cs" />
     <Compile Include="Commands\CommandGroupViewModel.cs" />

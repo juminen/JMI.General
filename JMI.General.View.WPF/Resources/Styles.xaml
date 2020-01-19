@@ -117,17 +117,27 @@
                 Height="16" />
         </StackPanel>
     </DataTemplate>
-    
-    <Style
+
+    <DataTemplate
+        x:Key="ClosableTabItemContentTemplate">
+        <ContentControl
+            Content="{Binding TabContent}" />
+    </DataTemplate>
+
+    <!-- FIX: erroria TabItemTemplatelta (liittyy jotenkin väriin)-->
+    <!--<Style
         TargetType="TabItem">
         <Setter
             Property="Template"
             Value="{StaticResource  TabItemTemplate}" />
-    </Style>
+    </Style>-->
     <Style
         TargetType="TabControl">
         <Setter
             Property="ItemTemplate"
             Value="{StaticResource  ClosableTabItem}" />
+        <Setter 
+            Property="ContentTemplate"
+            Value="{StaticResource ClosableTabItemContentTemplate}"/>
     </Style>
 </ResourceDictionary>
