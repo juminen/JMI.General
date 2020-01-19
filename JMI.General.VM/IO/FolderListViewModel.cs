@@ -12,7 +12,7 @@ namespace JMI.General.VM.IO
         #endregion
 
         #region properties
-        private Logger logger = Logger.Instance;
+        private SingletonLogger logger = SingletonLogger.Instance;
 
         private FolderListItemViewModel currentFolder;
         public FolderListItemViewModel CurrentFolder

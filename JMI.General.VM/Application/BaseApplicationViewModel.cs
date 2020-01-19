@@ -14,7 +14,7 @@ namespace JMI.General.VM.Application
         /// </summary>
         public BaseApplicationViewModel()
         {
-            Log = new LogViewModel();
+            Log = new SingletonLogViewModel();
         }
         #endregion
 

@@ -5,10 +5,10 @@ using System.Windows.Data;
 
 namespace JMI.General.Logging
 {
-    public sealed class Logger
+    public class Logger
     {
         #region constructors
-        private Logger()
+        public Logger()
         {
             messages = new ObservableCollection<ILogMessage>();
             Messages = new ListCollectionView(messages)
@@ -21,29 +21,39 @@ namespace JMI.General.Logging
         #endregion
 
         #region properties
-        private static readonly Lazy<Logger> lazy = new Lazy<Logger>(() => new Logger());
-        public static Logger Instance { get { return lazy.Value; } }
-        private ObservableCollection<ILogMessage> messages;
+        protected ObservableCollection<ILogMessage> messages;
         public ListCollectionView Messages { get; private set; }
         /// <summary>
-        /// Default time format is "yyyy-MM-dd hh:mm:ss.fff".
+        /// Time format for formatting log message time. Default time format is "yyyy-MM-dd hh:mm:ss.fff".
         /// </summary>
         public string TimeFormat { get; set; }
         #endregion
 
         #region methods
+        /// <summary>
+        /// Clears all <see cref="Messages"/> and sends event <see cref="MessagesCleared"/>.
+        /// </summary>
         public void ClearMessages()
         {
             messages.Clear();
             MessagesCleared?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Creates new log message and logs it using <see cref="Log(ILogMessage)"/>
+        /// </summary>
+        /// <param name="status">Message status, <see cref="LogMessageStatus"/></param>
+        /// <param name="message">Message</param>
         public void Log(LogMessageStatus status, string message)
         {
             ILogMessage msg = new LogMessage(status, message);
             Log(msg);
         }
 
+        /// <summary>
+        /// Adds message to collection <see cref="Messages"/> and sends event <see cref="MessageReceived"/>.
+        /// </summary>
+        /// <param name="message"><see cref="ILogMessage"/></param>
         public void Log(ILogMessage message)
         {
             messages.Add(message);
@@ -51,6 +61,9 @@ namespace JMI.General.Logging
             MessageReceived?.Invoke(this, args);
         }
 
+        /// <summary>
+        /// Copies message time, status, and contents to clipboard. Values are separated by tab.
+        /// </summary>
         public void CopyToClipboard()
         {
             StringBuilder sb = new StringBuilder();
@@ -66,7 +79,13 @@ namespace JMI.General.Logging
         #endregion
 
         #region events
+        /// <summary>
+        /// Event is fired when messages are cleared, <see cref="ClearMessages"/>
+        /// </summary>
         public event EventHandler MessagesCleared;
+        /// <summary>
+        /// Event is fired when message is received, <see cref="Log(ILogMessage)"/>
+        /// </summary>
         public event EventHandler<LogMessageEventArgs> MessageReceived;
         #endregion
 

@@ -17,7 +17,10 @@
         Template="{StaticResource HeaderControlBorderGridTemplate}">
         <HeaderedContentControl.Header>
             <Label
-                Content="Log" />
+                Content="{Binding LogTitle,
+                Mode=OneWay, 
+                UpdateSourceTrigger=PropertyChanged,
+                FallbackValue='Log'}" />
         </HeaderedContentControl.Header>
         <HeaderedContentControl.Content>
             <Grid>

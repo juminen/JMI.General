@@ -60,6 +60,7 @@
     <Compile Include="ListSelection\SelectionCollectionViewModel.cs" />
     <Compile Include="Logging\LogViewModel.cs" />
     <Compile Include="Logging\LogMessageViewModel.cs" />
+    <Compile Include="Logging\SingletonLogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

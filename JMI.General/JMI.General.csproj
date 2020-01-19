@@ -53,6 +53,7 @@
     <Compile Include="Logging\ILogMessage.cs" />
     <Compile Include="Logging\LogFactory.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\SingletonLogger.cs" />
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Logging\LogMessageStatus.cs" />
     <Compile Include="Logging\LogMessageEventArgs.cs" />

@@ -11,8 +11,10 @@ namespace JMI.General.VM.Logging
     public class LogViewModel : ObservableObject, IDisposable
     {
         #region constructors
-        public LogViewModel()
+        public LogViewModel(Logger logger)
         {
+
+            logSystem = logger ?? throw new ArgumentNullException(nameof(logger) + " can not be null");
             messages = new ObservableCollection<LogMessageViewModel>();
             Messages = new ListCollectionView(messages)
             {
@@ -20,18 +22,29 @@ namespace JMI.General.VM.Logging
             };
             Messages.LiveSortingProperties.Add(nameof(LogMessageViewModel.Time));
             Messages.SortDescriptions.Add(new SortDescription(nameof(LogMessageViewModel.Time), ListSortDirection.Ascending));
-            logSystem = Logger.Instance;
             logSystem.MessageReceived += OnLogMessageReceived;
             logSystem.MessagesCleared += OnLogMessagesCleared;
             CreateCommands();
+            LogTitle = "Log";
         }
         #endregion
 
         #region properties
-        private readonly Logger logSystem;
-        private ObservableCollection<LogMessageViewModel> messages;
+        protected readonly Logger logSystem;
+        protected ObservableCollection<LogMessageViewModel> messages;
         public ListCollectionView Messages { get; private set; }
         public ReadOnlyCollection<CommandGroupViewModel> CommandGroups { get; private set; }
+
+        private string logTitle;
+        /// <summary>
+        /// Title shown in log header. Default title is "Log".
+        /// </summary>
+        public string LogTitle
+        {
+            get { return logTitle; }
+            set { SetProperty(ref logTitle, value); }
+        }
+
         #endregion
 
         #region commands

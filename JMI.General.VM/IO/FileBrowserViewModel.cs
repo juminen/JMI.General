@@ -18,7 +18,7 @@ namespace JMI.General.VM.IO
         #endregion
 
         #region properties
-        private Logger logger = Logger.Instance;
+        private SingletonLogger logger = SingletonLogger.Instance;
         public DirectoryTreeViewModel Tree { get; private set; }
         public FolderListViewModel Folders { get; private set; }
         public FileListViewModel Files { get; private set; }
