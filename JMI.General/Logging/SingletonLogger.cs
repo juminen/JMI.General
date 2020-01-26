@@ -5,6 +5,10 @@ namespace JMI.General.Logging
     public sealed class SingletonLogger : Logger
     {
         #region constructors
+        public SingletonLogger()
+        {
+            Name = "Log";
+        }
         #endregion
 
         #region properties

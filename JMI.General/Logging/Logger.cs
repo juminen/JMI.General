@@ -17,6 +17,12 @@ namespace JMI.General.Logging
             };
             Messages.LiveSortingProperties.Add(nameof(ILogMessage.Time));
             TimeFormat = $"yyyy-MM-dd hh:mm:ss.fff";
+            Name = string.Empty;
+        }
+
+        public Logger(string name) :this()
+        {
+            Name = name;
         }
         #endregion
 
@@ -27,6 +33,11 @@ namespace JMI.General.Logging
         /// Time format for formatting log message time. Default time format is "yyyy-MM-dd hh:mm:ss.fff".
         /// </summary>
         public string TimeFormat { get; set; }
+
+        /// <summary>
+        /// Name for logger
+        /// </summary>
+        public string Name { get; set; }
         #endregion
 
         #region methods

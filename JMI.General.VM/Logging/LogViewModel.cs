@@ -25,7 +25,7 @@ namespace JMI.General.VM.Logging
             logSystem.MessageReceived += OnLogMessageReceived;
             logSystem.MessagesCleared += OnLogMessagesCleared;
             CreateCommands();
-            LogTitle = "Log";
+            LogTitle = logSystem.Name;
         }
         #endregion
 

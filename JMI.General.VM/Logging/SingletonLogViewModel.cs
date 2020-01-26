@@ -6,7 +6,7 @@ namespace JMI.General.VM.Logging
     {
         public SingletonLogViewModel() : base(SingletonLogger.Instance)
         {
-
+            LogTitle = "Log";
         }
     }
 }
