@@ -7,7 +7,7 @@ using System.Windows.Data;
 
 namespace JMI.General.ListSelection
 {
-    public abstract class SelectionCollection<T> : ObservableObject, ISelectionCollection<T> where T : ISelectionCollectionItem
+    public class SelectionCollection<T> : ObservableObject, ISelectionCollection<T> where T : ISelectionCollectionItem
     {
         #region constructors
         public SelectionCollection()
@@ -198,6 +198,21 @@ namespace JMI.General.ListSelection
             {
                 item.IsChecked = false;
             }
+        }
+        
+        public IEnumerable<T> GetAllItemsAsIEnumerable()
+        {
+            return allItems.ToList();
+        }
+
+        public IEnumerable<T> GetCheckedItemsAsIEnumerable()
+        {
+            return CheckedItems.Cast<T>().ToList();
+        }
+
+        public IEnumerable<T> GetSelectedItemsAsIEnumerable()
+        {
+            return SelectedItems.Cast<T>().ToList();
         }
         #endregion
 

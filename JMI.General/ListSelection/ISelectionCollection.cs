@@ -20,6 +20,9 @@ namespace JMI.General.ListSelection
         void CheckAll();
         void CheckSelected();
         void Dispose();
+        IEnumerable<T> GetAllItemsAsIEnumerable();
+        IEnumerable<T> GetCheckedItemsAsIEnumerable();
+        IEnumerable<T> GetSelectedItemsAsIEnumerable();
         void InvertChecked();
         void RemoveAll();
         void RemoveChecked();
