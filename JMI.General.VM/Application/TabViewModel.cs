@@ -3,7 +3,7 @@
     /// <summary>
     /// Class for tabs used in user interface
     /// </summary>
-    public class TabViewModel<T> : CloseViewModel where T : class
+    public class TabViewModel : CloseViewModel
     {
         #region constructors
         #endregion
@@ -18,17 +18,6 @@
             get { return displayText; }
             set { SetProperty(ref displayText, value); }
         }
-
-        private T tabContent;
-        /// <summary>
-        /// Content for the tab (usually a viewmodel class)
-        /// </summary>
-        public T TabContent
-        {
-            get { return tabContent; }
-            set { SetProperty(ref tabContent, value); }
-        }
-
         #endregion
 
         #region commands

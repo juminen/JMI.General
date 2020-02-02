@@ -136,8 +136,5 @@
         <Setter
             Property="ItemTemplate"
             Value="{StaticResource  ClosableTabItem}" />
-        <Setter 
-            Property="ContentTemplate"
-            Value="{StaticResource ClosableTabItemContentTemplate}"/>
     </Style>
 </ResourceDictionary>
