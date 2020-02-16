@@ -40,6 +40,10 @@
   <ItemGroup>
     <Compile Include="Application\BaseApplicationViewModel.cs" />
     <Compile Include="Application\CloseViewModel.cs" />
+    <Compile Include="Application\ICloseViewModel.cs" />
+    <Compile Include="Application\IRequestCloseViewModel.cs" />
+    <Compile Include="Application\ITabViewModel.cs" />
+    <Compile Include="Application\RequestCloseViewModel.cs" />
     <Compile Include="Application\TabViewModel.cs" />
     <Compile Include="CED\CreateNewItemViewModel.cs" />
     <Compile Include="CED\DeleteItemViewModel.cs" />

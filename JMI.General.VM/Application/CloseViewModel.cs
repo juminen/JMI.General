@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace JMI.General.VM.Application
+﻿namespace JMI.General.VM.Application
 {
     /// <summary>
     /// Class for user interface items that are closable (eg. tab, editing form etc)
     /// </summary>
-    public abstract class CloseViewModel : ObservableObject, IDisposable
+    public abstract class CloseViewModel : RequestCloseViewModel, ICloseViewModel
     {
         #region constructors
         #endregion
@@ -21,12 +18,23 @@ namespace JMI.General.VM.Application
             get { return allowClose; }
             protected set { SetProperty(ref allowClose, value); }
         }
+
+        private string closeFailReason;
+        /// <summary>
+        /// Message for user if viewmodel does not allow closing.
+        /// </summary>
+        public string CloseFailReason
+        {
+            get { return closeFailReason; }
+            protected set { SetProperty(ref closeFailReason, value); }
+        }
         #endregion
 
         #region commands
         private RelayCommand closeCommand;
         /// <summary>
-        /// Command is enabled by <see cref="AllowClose"/> and calls method <see cref="CloseRequested"/>
+        /// Command is enabled by <see cref="AllowClose"/> and
+        /// calls method <see cref="CloseRequested"/>
         /// </summary>
         public RelayCommand CloseCommand
         {
@@ -36,7 +44,7 @@ namespace JMI.General.VM.Application
                 {
                     closeCommand =
                       new RelayCommand(
-                          async param => await RequestClose(),
+                          param => RequestClose(),
                           param => AllowClose);
                 }
                 return closeCommand;
@@ -45,29 +53,9 @@ namespace JMI.General.VM.Application
         #endregion
 
         #region methods
-        /// <summary>
-        /// Does not do anything, override method in derived classes if neeeded.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            //Do nothing
-        }
-
-        /// <summary>
-        /// Calls <see cref="Dispose"/> and sends event <see cref="CloseRequested"/>
-        /// </summary>
-        protected virtual async Task RequestClose()
-        {
-            Dispose();
-            CloseRequested?.Invoke(this, EventArgs.Empty);
-        }
         #endregion
 
         #region events
-        /// <summary>
-        /// Event is send when close is requested, <see cref="RequestClose"/>
-        /// </summary>
-        public event EventHandler CloseRequested;
         #endregion
 
         #region event handlers

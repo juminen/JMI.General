@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JMI.General.VM.Application;
+using System;
 using System.Threading.Tasks;
 
 namespace JMI.General.VM.CED
@@ -6,7 +7,7 @@ namespace JMI.General.VM.CED
     /// <summary>
     /// Base class for views aimed to delete items.
     /// </summary>
-    public abstract class DeleteItemViewModel : ObservableObject, IDisposable
+    public abstract class DeleteItemViewModel : RequestCloseViewModel
     {
         #region constructors
         #endregion
@@ -68,11 +69,13 @@ namespace JMI.General.VM.CED
         protected abstract Task DeleteItemAsync();
 
         /// <summary>
-        /// Calls <see cref="Dispose"/> and sends event <see cref="DeletionCanceled"/>.
+        /// Sends events <see cref="DeletionCanceled"/>
+        /// and calls <see cref="RequestCloseViewModel.RequestClose"/>.
         /// </summary>
         public virtual void Cancel()
         {
             DeletionCanceled?.Invoke(this, EventArgs.Empty);
+            RequestClose();
         }
 
         /// <summary>
@@ -82,11 +85,6 @@ namespace JMI.General.VM.CED
         {
             ItemDeleted?.Invoke(this, EventArgs.Empty);
         }
-
-        /// <summary>
-        /// Absract methor for derived classes.
-        /// </summary>
-        public abstract void Dispose();
         #endregion
 
         #region events

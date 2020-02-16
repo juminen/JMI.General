@@ -3,7 +3,7 @@
     /// <summary>
     /// Class for tabs used in user interface
     /// </summary>
-    public class TabViewModel : CloseViewModel
+    public class TabViewModel : CloseViewModel, ITabViewModel
     {
         #region constructors
         #endregion
