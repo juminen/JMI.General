@@ -40,6 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionResult.cs" />
+    <Compile Include="ChangeTracking\IPropertyTracker.cs" />
+    <Compile Include="ChangeTracking\PropertyTracker.cs" />
+    <Compile Include="ChangeTracking\StateTracker.cs" />
     <Compile Include="IO\DirectoryCrawler.cs" />
     <Compile Include="IO\FileFilter.cs" />
     <Compile Include="IO\FileFilters.cs" />
