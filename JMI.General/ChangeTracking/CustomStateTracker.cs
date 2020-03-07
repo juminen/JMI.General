@@ -6,47 +6,18 @@ namespace JMI.General.ChangeTracking
 {
     /// <summary>
     /// Class provides mechanism to track/compare property changes 
-    /// between two objects.
+    /// between different objects. 
     /// </summary>
-    public class StateTracker<T1, T2> : ObservableObject, IDisposable, IStateTracker
-        where T1 : ObservableObject
-        where T2 : ObservableObject
+    public class CustomStateTracker : ObservableObject, IDisposable, ICustomStateTracker
     {
         #region constructors
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="propertyNamesToTrack">List of names of properties whose values are tracked.
-        /// Both objects has to have same property names.</param>
-        /// <param name="originalObjectToCompare">Object where property values are compared.</param>
-        /// <param name="objectToTrack">Object whose property value changes are tracked.</param>
-        public StateTracker(
-            IEnumerable<string> propertyNamesToTrack,
-            T1 originalObjectToCompare,
-            T2 objectToTrack)
+        public CustomStateTracker()
         {
-            if (originalObjectToCompare == null)
-            {
-                throw new ArgumentNullException(nameof(originalObjectToCompare));
-            }
-            if (objectToTrack == null)
-            {
-                throw new ArgumentNullException(nameof(objectToTrack));
-            }
-
             trackers = new List<IPropertyTracker>();
-            foreach (string item in propertyNamesToTrack)
-            {
-                PropertyTracker<T1, T2> tracker =
-                    new PropertyTracker<T1, T2>(originalObjectToCompare, objectToTrack, item);
-                tracker.ValuesChecked += OnTrackerValueChecked;
-                trackers.Add(tracker);
-            }
-            CheckState();
         }
         #endregion
 
-        #region properties   
+        #region properties
         private List<IPropertyTracker> trackers;
 
         private bool sameState;
@@ -69,7 +40,6 @@ namespace JMI.General.ChangeTracking
         #region methods
         private void CheckState()
         {
-
             if (trackers.All(t => t.ComparisonResult == true))
             {
                 SameState = true;
@@ -87,6 +57,31 @@ namespace JMI.General.ChangeTracking
                 item.ValuesChecked -= OnTrackerValueChecked;
                 item.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Use this method to add comparable objects/properties.
+        /// </summary>
+        /// <typeparam name="T1"><see cref="ObservableObject"/></typeparam>
+        /// <typeparam name="T2"><see cref="ObservableObject"/></typeparam>
+        /// <param name="originalObjectToCompare">Object to which property value is compared.</param>
+        /// <param name="originalPropertyName">Name of the compared property</param>
+        /// <param name="objectToTrack">Object whose property value changes are tracked.</param>
+        /// <param name="trackedPropertyName">Name of the compared property</param>
+        public void AddTracking<T1, T2>(
+            T1 originalObjectToCompare,
+            string originalPropertyName,
+            T2 objectToTrack,
+            string trackedPropertyName)
+            where T1 : ObservableObject
+            where T2 : ObservableObject
+        {
+            CustomPropertyTracker<T1, T2> cpt = new CustomPropertyTracker<T1, T2>(
+                originalObjectToCompare, originalPropertyName,
+                objectToTrack, trackedPropertyName);
+            cpt.ValuesChecked += OnTrackerValueChecked;
+            trackers.Add(cpt);
+            CheckState();
         }
         #endregion
 

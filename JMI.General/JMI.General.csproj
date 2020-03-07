@@ -40,7 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionResult.cs" />
+    <Compile Include="ChangeTracking\CustomStateTracker.cs" />
+    <Compile Include="ChangeTracking\ICustomStateTracker.cs" />
     <Compile Include="ChangeTracking\IPropertyTracker.cs" />
+    <Compile Include="ChangeTracking\IStateTracker.cs" />
+    <Compile Include="ChangeTracking\CustomPropertyTracker.cs" />
     <Compile Include="ChangeTracking\PropertyTracker.cs" />
     <Compile Include="ChangeTracking\StateTracker.cs" />
     <Compile Include="IO\DirectoryCrawler.cs" />

@@ -36,7 +36,20 @@ namespace JMI.General.ChangeTracking
         {
             var originalValue = originalObject.GetType().GetProperty(TrackedPropertyName).GetValue(originalObject);
             var trackValue = trackedObject.GetType().GetProperty(TrackedPropertyName).GetValue(trackedObject);
-            ComparisonResult = originalValue.Equals(trackValue);
+
+            if (originalValue == null && trackValue == null)
+            {
+                ComparisonResult = true;
+            }
+            else if ((originalValue == null && trackValue != null) ||
+            (originalValue != null && trackValue == null))
+            {
+                ComparisonResult = false;
+            }
+            else
+            {
+                ComparisonResult = originalValue.Equals(trackValue);
+            }
             ValuesChecked?.Invoke(this, EventArgs.Empty);
         }
         #endregion
