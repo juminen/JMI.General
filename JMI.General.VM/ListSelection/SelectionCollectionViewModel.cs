@@ -54,6 +54,10 @@ namespace JMI.General.VM.ListSelection
         /// </summary>
         protected IList<CommandGroupViewModel> commandGroupsList;
         /// <summary>
+        /// Collection of command groups
+        /// </summary>
+        public ReadOnlyCollection<CommandGroupViewModel> CommandGroups { get; private set; }
+        /// <summary>
         ///  Collectionview for all selection collection list items
         /// </summary>
         public ListCollectionView AllItems { get; protected set; }
@@ -80,10 +84,150 @@ namespace JMI.General.VM.ListSelection
         #endregion
 
         #region commands
+        private CommandViewModel checkAllCommand;
+        public CommandViewModel CheckAllCommand
+        {
+            get
+            {
+                if (checkAllCommand == null)
+                {
+                    RelayCommand checkAllRelay =
+                        new RelayCommand(
+                            param => collection.CheckAll(),
+                            param => collection.AllItems.Count > 0);
+                    checkAllCommand = new CommandViewModel("Check all", checkAllRelay);
+                }
+                return checkAllCommand;
+            }
+        }
+
+        private CommandViewModel unCheckAllCommand;
+        public CommandViewModel UnCheckAllCommand
+        {
+            get
+            {
+                if (unCheckAllCommand == null)
+                {
+                    RelayCommand unCheckAllRelay =
+                        new RelayCommand(
+                            param => collection.UnCheckAll(),
+                            param => collection.CheckedItems.Count > 0);
+                    unCheckAllCommand = new CommandViewModel("Uncheck all", unCheckAllRelay);
+                }
+                return unCheckAllCommand;
+            }
+        }
+
+        private CommandViewModel invertCheckedCommand;
+        public CommandViewModel InvertCheckedCommand
+        {
+            get
+            {
+                if (invertCheckedCommand == null)
+                {
+                    RelayCommand invertCheckedRelay =
+                        new RelayCommand(
+                            param => collection.InvertChecked(),
+                            param => collection.AllItems.Count > 0);
+                    invertCheckedCommand = new CommandViewModel("Invert checked", invertCheckedRelay);
+                }
+                return invertCheckedCommand;
+            }
+        }
+
+        private CommandViewModel removeCheckedCommand;
+        public CommandViewModel RemoveCheckedCommand
+        {
+            get
+            {
+                if (removeCheckedCommand == null)
+                {
+                    RelayCommand removeCheckedRelay =
+                        new RelayCommand(
+                            param => collection.RemoveChecked(),
+                            param => collection.CheckedItems.Count > 0);
+                    removeCheckedCommand = new CommandViewModel("Remove checked", removeCheckedRelay);
+                }
+                return removeCheckedCommand;
+            }
+        }
+
+        private CommandViewModel checkSelectedCommand;
+        public CommandViewModel CheckSelectedCommand
+        {
+            get
+            {
+                if (checkSelectedCommand == null)
+                {
+                    RelayCommand checkSelectedRelay =
+                        new RelayCommand(
+                            param => collection.CheckSelected(),
+                            param => collection.SelectedItems.Count > 0);
+                    checkSelectedCommand = new CommandViewModel("Check selected", checkSelectedRelay);
+                }
+                return checkSelectedCommand;
+            }
+        }
+
+        private CommandViewModel unCheckSelectedCommand;
+        public CommandViewModel UnCheckSelectedCommand
+        {
+            get
+            {
+                if (unCheckSelectedCommand == null)
+                {
+                    RelayCommand unCheckSelectedRelay =
+                        new RelayCommand(
+                            param => collection.UnCheckSelected(),
+                            param => collection.SelectedItems.Count > 0);
+                    unCheckSelectedCommand = new CommandViewModel("Uncheck selected", unCheckSelectedRelay);
+                }
+                return unCheckSelectedCommand;
+            }
+        }
+
+        private CommandViewModel clearListCommand;
+        public CommandViewModel ClearListCommand
+        {
+            get
+            {
+                if (clearListCommand == null)
+                {
+                    RelayCommand clearListRelay =
+                        new RelayCommand(
+                            param => collection.RemoveAll(),
+                            param => collection.AllItems.Count > 0);
+                    clearListCommand = new CommandViewModel("Clear list", clearListRelay);
+                }
+                return clearListCommand;
+            }
+        }
+
+        private CommandGroupViewModel selectionGroup;
+        public CommandGroupViewModel SelectionGroup
+        {
+            get
+            {
+                if (selectionGroup == null)
+                {
+                    selectionGroup = new CommandGroupViewModel("Selection");
+                    foreach (CommandViewModel item in CreateCommands())
+                    {
+                        selectionGroup.Commands.Add(item);
+                    }
+                }
+                return selectionGroup;
+            }
+        }
+        #endregion
+
+        #region methods
         /// <summary>
-        /// Collection of command groups
+        /// Abstract method for creating list item viewmodel
         /// </summary>
-        public ReadOnlyCollection<CommandGroupViewModel> CommandGroups { get; private set; }
+        /// <param name="item"></param>
+        /// <returns></returns>
+        protected abstract TViewModel CreateViewModel(T item);
 
         /// <summary>
         /// Creates following commands:
@@ -98,88 +242,54 @@ namespace JMI.General.VM.ListSelection
         /// <returns></returns>
         private IList<CommandViewModel> CreateCommands()
         {
-            List<CommandViewModel> list = new List<CommandViewModel>();
-
-            RelayCommand checkAllRelay =
-                new RelayCommand(
-                    param => collection.CheckAll(),
-                    param => collection.AllItems.Count > 0);
-            CommandViewModel checkAllCvm =
-                new CommandViewModel("Check all", checkAllRelay);
-            list.Add(checkAllCvm);
-
-            RelayCommand unCheckAllRelay =
-                new RelayCommand(
-                    param => collection.UnCheckAll(),
-                    param => collection.CheckedItems.Count > 0);
-            CommandViewModel unCheckAllCvm =
-                new CommandViewModel("Uncheck all", unCheckAllRelay);
-            list.Add(unCheckAllCvm);
-
-            RelayCommand invertCheckedRelay =
-                new RelayCommand(
-                    param => collection.InvertChecked(),
-                    param => collection.AllItems.Count > 0);
-            CommandViewModel invertCheckedCvm =
-                new CommandViewModel("Invert checked", invertCheckedRelay);
-            list.Add(invertCheckedCvm);
-
-            RelayCommand removeCheckedRelay =
-                new RelayCommand(
-                    param => collection.RemoveChecked(),
-                    param => collection.CheckedItems.Count > 0);
-            CommandViewModel removeCheckedCvm =
-                new CommandViewModel("Remove checked", removeCheckedRelay);
-            list.Add(removeCheckedCvm);
-
-            RelayCommand checkSelectedRelay =
-                new RelayCommand(
-                    param => collection.CheckSelected(),
-                    param => collection.SelectedItems.Count > 0);
-            CommandViewModel checkSelectedCvm =
-                new CommandViewModel("Check selected", checkSelectedRelay);
-            list.Add(checkSelectedCvm);
-
-            RelayCommand unCheckSelectedRelay =
-                new RelayCommand(
-                    param => collection.UnCheckSelected(),
-                    param => collection.SelectedItems.Count > 0);
-            CommandViewModel unCheckSelectedCvm =
-                new CommandViewModel("Uncheck selected", unCheckSelectedRelay);
-            list.Add(unCheckSelectedCvm);
-
-            RelayCommand clearListRelay =
-                new RelayCommand(
-                    param => collection.RemoveAll(),
-                    param => collection.AllItems.Count > 0);
-            CommandViewModel clearListCvm =
-                new CommandViewModel("Clear list", clearListRelay);
-            list.Add(clearListCvm);
-
+            List<CommandViewModel> list = new List<CommandViewModel>()
+            {
+                CheckAllCommand,
+                UnCheckAllCommand,
+                InvertCheckedCommand,
+                RemoveCheckedCommand,
+                CheckSelectedCommand,
+                UnCheckSelectedCommand,
+                ClearListCommand
+            };
             return list;
         }
 
         private IList<CommandGroupViewModel> CreateCommandGroups()
         {
-            List<CommandGroupViewModel> list = new List<CommandGroupViewModel>();
-            CommandGroupViewModel group = new CommandGroupViewModel("Selection");
-            foreach (CommandViewModel item in CreateCommands())
+            List<CommandGroupViewModel> list = new List<CommandGroupViewModel>
             {
-                group.Commands.Add(item);
-            }
-            list.Add(group);
+                SelectionGroup
+            };
             return list;
         }
 
-        #endregion
+        public void RemoveCommand(CommandViewModel command)
+        {
+            foreach (CommandGroupViewModel group in commandGroupsList)
+            {
+                if (group.Commands.Contains(command))
+                {
+                    group.Commands.Remove(command);
+                }
+            }
+        }
 
-        #region methods
-        /// <summary>
-        /// Abstract method for creating list item viewmodel
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        protected abstract TViewModel CreateViewModel(T item);
+        public void AddCommandGroup(CommandGroupViewModel group)
+        {
+            if (!commandGroupsList.Contains(group))
+            {
+                commandGroupsList.Add(group);
+            }
+        }
+
+        public void RemoveCommandGroup(CommandGroupViewModel group)
+        {
+            if (commandGroupsList.Contains(group))
+            {
+                commandGroupsList.Remove(group);
+            }
+        }
 
         /// <summary>
         /// Clears sorting for <see cref="AllItems"/>.
