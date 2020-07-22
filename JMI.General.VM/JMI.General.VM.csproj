@@ -70,6 +70,9 @@
     <Compile Include="Logging\LogMessageViewModel.cs" />
     <Compile Include="Logging\SingletonLogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Selections\ISelectionItemViewModel.cs" />
+    <Compile Include="Selections\SelectionCollectionViewModel.cs" />
+    <Compile Include="Selections\SelectionItemViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JMI.General\JMI.General.csproj">

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Data;
 
-namespace JMI.General.ListSelection
+namespace JMI.General.Selections
 {
-    [Obsolete("Use namespace Selections")]
-    public interface ISelectionCollection<T> where T : ISelectionCollectionItem
+    public interface ISelectionCollection<T> where T : ISelectionTarget
     {
         ListCollectionView AllItems { get; }
         ListCollectionView CheckedItems { get; }
@@ -16,18 +14,17 @@ namespace JMI.General.ListSelection
         event EventHandler CollectionChangeCleared;
         event EventHandler<SelectionCollectionRemoveEventArgs> CollectionChangeRemoved;
 
-        void AddItem(T item);
-        void AddRange(IEnumerable<T> items);
+        void AddItem(T targetItem);
+        void AddRange(IEnumerable<T> targetItems);
         void CheckAll();
         void CheckSelected();
-        void Dispose();
-        IEnumerable<T> GetAllItemsAsIEnumerable();
-        IEnumerable<T> GetCheckedItemsAsIEnumerable();
-        IEnumerable<T> GetSelectedItemsAsIEnumerable();
+        IEnumerable<T> GetAllTargetItems();
+        IEnumerable<T> GetCheckedTargetItems();
+        IEnumerable<T> GetSelectedTargetItems();
         void InvertChecked();
         void RemoveAll();
         void RemoveChecked();
-        void RemoveRange(IEnumerable<string> itemIds);
+        void RemoveRange(IEnumerable<T> targetItems);
         void RemoveSelected();
         void UnCheckAll();
         void UnCheckSelected();

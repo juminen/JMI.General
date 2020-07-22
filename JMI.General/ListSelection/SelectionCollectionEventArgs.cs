@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace JMI.General.ListSelection
 {
+    [Obsolete("Use namespace Selections")]
     public class SelectionCollectionAddEventArgs<T> : EventArgs where T : ISelectionCollectionItem
     {
         public IEnumerable<T> AddedItems { get; private set; }
@@ -12,7 +13,7 @@ namespace JMI.General.ListSelection
             AddedItems = new List<T>(addedItems);
         }
     }
-
+    [Obsolete("Use namespace Selections")]
     public class SelectionCollectionRemoveEventArgs : EventArgs
     {
         /// <summary>

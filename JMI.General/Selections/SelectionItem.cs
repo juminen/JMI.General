@@ -1,25 +1,22 @@
 ﻿using System;
 
-namespace JMI.General.ListSelection
+namespace JMI.General.Selections
 {
-    [Obsolete("Use namespace Selections")]
-    public abstract class SelectionCollectionItem : ObservableObject, IDisposable, ISelectionCollectionItem
+    class SelectionItem<T> : ObservableObject, ISelectionItem<T>
+        where T : ISelectionTarget
     {
         #region constructors
-        public SelectionCollectionItem()
+        public SelectionItem(T target)
         {
+            Target = target;
         }
         #endregion
 
         #region properties
         /// <summary>
-        /// Unique id for item
+        ///Item that is target of the selection.
         /// </summary>
-        public abstract string Id { get; }
-        /// <summary>
-        /// Text displayed in lists
-        /// </summary>
-        public abstract string DisplayText { get; }
+        public T Target { get; }
 
         private bool isSelected;
         public bool IsSelected
@@ -59,7 +56,6 @@ namespace JMI.General.ListSelection
         #endregion
 
         #region methods
-        public abstract void Dispose();
         #endregion
 
         #region events

@@ -1,19 +1,19 @@
-﻿using System;
+﻿using JMI.General.Identifiers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 
-namespace JMI.General.ListSelection
+namespace JMI.General.Selections
 {
-    [Obsolete("Use namespace Selections")]
-    public class SelectionCollection<T> : ObservableObject, ISelectionCollection<T> where T : ISelectionCollectionItem
+    public class SelectionCollection<T> : ObservableObject, ISelectionCollection<T>
+        where T : ISelectionTarget
     {
         #region constructors
         public SelectionCollection()
         {
-            allItems = new ObservableCollection<T>();
+            allItems = new ObservableCollection<ISelectionItem<T>>();
             AllItems = new ListCollectionView(allItems);
 
             CheckedItems = new ListCollectionView(allItems)
@@ -33,64 +33,37 @@ namespace JMI.General.ListSelection
         #endregion
 
         #region properties
-        protected ObservableCollection<T> allItems;
+        protected ObservableCollection<ISelectionItem<T>> allItems;
 
-        public ListCollectionView AllItems { get; protected set; }
         //ListCollectionView is used because live filtering.
         //Other methods (ICollectionView and others) does not work.
         //ListCollectionView contains all required properties and methods.
+        public ListCollectionView AllItems { get; protected set; }
         public ListCollectionView CheckedItems { get; protected set; }
         public ListCollectionView SelectedItems { get; protected set; }
         #endregion
 
         #region methods
-        public virtual void Dispose()
-        {
-            foreach (T item in allItems)
-            {
-                item.Dispose();
-            }
-        }
-
         private bool IsCheckedFilter(object obj)
         {
-            return ((T)obj).IsChecked;
+            return ((ISelectionItem<T>)obj).IsChecked;
         }
 
         private bool IsSelectedFilter(object obj)
         {
-            return ((T)obj).IsSelected;
+            return ((ISelectionItem<T>)obj).IsSelected;
         }
 
-        private bool Add(T item, bool sendEvent)
+        private void Add(IEnumerable<T> targetItems)
         {
-            if (!allItems.Any(x => x.Id.Equals(item.Id)))
+            List<ISelectionItem<T>> added = new List<ISelectionItem<T>>();
+            foreach (T item in targetItems)
             {
-                allItems.Add(item);
-                if (sendEvent)
+                if (!allItems.Any(x => x.Target.Identifier.Id.Equals(item.Identifier.Id)))
                 {
-                    SelectionCollectionAddEventArgs<T> args =
-                        new SelectionCollectionAddEventArgs<T>(new List<T>() { item });
-                    CollectionChangeAdded?.Invoke(this, args);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public void AddItem(T item)
-        {
-            Add(item, true);
-        }
-
-        public void AddRange(IEnumerable<T> items)
-        {
-            List<T> added = new List<T>();
-            foreach (T item in items)
-            {
-                if (Add(item, false))
-                {
-                    added.Add(item);
+                    ISelectionItem<T> selectionItem = new SelectionItem<T>(item);
+                    allItems.Add(selectionItem);
+                    added.Add(selectionItem);
                 }
             }
             if (added.Count > 0)
@@ -101,21 +74,31 @@ namespace JMI.General.ListSelection
             }
         }
 
+        public void AddItem(T targetItem)
+        {
+            Add(new List<T>() { targetItem });
+        }
+
+        public void AddRange(IEnumerable<T> targetItems)
+        {
+            Add(targetItems);
+        }
+
         public void RemoveAll()
         {
             allItems.Clear();
             CollectionChangeCleared?.Invoke(this, EventArgs.Empty);
         }
 
-        private bool Remove(string id, bool sendEvent)
+        private bool Remove(T targetItem, bool sendEvent)
         {
-            if (allItems.Any(x => x.Id.Equals(id)))
+            if (allItems.Any(x => x.Target.Identifier.Id.Equals(targetItem.Identifier.Id)))
             {
-                allItems.Remove(allItems.First(x => x.Id.Equals(id)));
+                allItems.Remove(allItems.First(x => x.Target.Identifier.Id.Equals(targetItem.Identifier.Id)));
                 if (sendEvent)
                 {
-                    SelectionCollectionRemoveEventArgs args = 
-                        new SelectionCollectionRemoveEventArgs(new List<string>() { id });
+                    SelectionCollectionRemoveEventArgs args =
+                        new SelectionCollectionRemoveEventArgs(new List<IIdentifier>() { targetItem.Identifier });
                     CollectionChangeRemoved?.Invoke(this, args);
                 }
                 return true;
@@ -123,17 +106,17 @@ namespace JMI.General.ListSelection
             return false;
         }
 
-        public void RemoveRange(IEnumerable<string> itemIds)
+        public void RemoveRange(IEnumerable<T> targetItems)
         {
-            List<string> removed = new List<string>();
-            foreach (string id in itemIds)
+            List<IIdentifier> removed = new List<IIdentifier>();
+            foreach (T target in targetItems)
             {
-                if (Remove(id, false))
+                if (Remove(target, false))
                 {
-                    removed.Add(id);
+                    removed.Add(target.Identifier);
                 }
             }
-            if (removed.Count>0)
+            if (removed.Count > 0)
             {
                 SelectionCollectionRemoveEventArgs args =
                     new SelectionCollectionRemoveEventArgs(removed);
@@ -143,27 +126,28 @@ namespace JMI.General.ListSelection
 
         public void RemoveChecked()
         {
-            List<string> ids = new List<string>();
-            foreach (T item in CheckedItems)
+            List<T> removeList = new List<T>();
+            foreach (ISelectionItem<T> selectionItem in CheckedItems)
             {
-                ids.Add(item.Id);
+                removeList.Add(selectionItem.Target);
             }
-            RemoveRange(ids);
+            RemoveRange(removeList);
         }
 
         public void RemoveSelected()
         {
-            List<string> ids = new List<string>();
-            foreach (T item in SelectedItems)
+            List<T> removeList = new List<T>();
+            //foreach (T item in SelectedItems)
+            foreach (ISelectionItem<T> selectionItem in SelectedItems)
             {
-                ids.Add(item.Id);
+                removeList.Add(selectionItem.Target);
             }
-            RemoveRange(ids);
+            RemoveRange(removeList);
         }
 
         public void CheckAll()
         {
-            foreach (T item in allItems)
+            foreach (ISelectionItem<T> item in allItems)
             {
                 item.IsChecked = true;
             }
@@ -171,7 +155,7 @@ namespace JMI.General.ListSelection
 
         public void UnCheckAll()
         {
-            foreach (T item in allItems)
+            foreach (ISelectionItem<T> item in allItems)
             {
                 item.IsChecked = false;
             }
@@ -179,7 +163,7 @@ namespace JMI.General.ListSelection
 
         public void InvertChecked()
         {
-            foreach (T item in allItems)
+            foreach (ISelectionItem<T> item in allItems)
             {
                 item.IsChecked = !item.IsChecked;
             }
@@ -187,7 +171,7 @@ namespace JMI.General.ListSelection
 
         public void CheckSelected()
         {
-            foreach (T item in SelectedItems)
+            foreach (ISelectionItem<T> item in SelectedItems)
             {
                 item.IsChecked = true;
             }
@@ -195,25 +179,35 @@ namespace JMI.General.ListSelection
 
         public void UnCheckSelected()
         {
-            foreach (T item in SelectedItems)
+            foreach (ISelectionItem<T> item in SelectedItems)
             {
                 item.IsChecked = false;
             }
         }
-        
-        public IEnumerable<T> GetAllItemsAsIEnumerable()
+
+        public IEnumerable<T> GetAllTargetItems()
         {
-            return allItems.ToList();
+            return allItems.Select(x => x.Target).ToList();
         }
 
-        public IEnumerable<T> GetCheckedItemsAsIEnumerable()
+        public IEnumerable<T> GetCheckedTargetItems()
         {
-            return CheckedItems.Cast<T>().ToList();
+            List<T> list = new List<T>();
+            foreach (ISelectionItem<T> selectionItem in CheckedItems)
+            {
+                list.Add(selectionItem.Target);
+            }
+            return list;
         }
 
-        public IEnumerable<T> GetSelectedItemsAsIEnumerable()
+        public IEnumerable<T> GetSelectedTargetItems()
         {
-            return SelectedItems.Cast<T>().ToList();
+            List<T> list = new List<T>();
+            foreach (ISelectionItem<T> selectionItem in SelectedItems)
+            {
+                list.Add(selectionItem.Target);
+            }
+            return list;
         }
         #endregion
 

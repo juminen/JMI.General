@@ -2,6 +2,7 @@
 
 namespace JMI.General.VM.ListSelection
 {
+    [Obsolete("Use namespace Selections")]
     public interface ISelectionCollectionItemViewModel : IDisposable
     {
         /// <summary>

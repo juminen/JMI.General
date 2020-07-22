@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 namespace JMI.General.ListSelection
 {
+    [Obsolete("Use namespace Selections")]
     public interface ISelectionCollectionItem : INotifyPropertyChanged
     {
         /// <summary>

@@ -1,33 +1,31 @@
-﻿using JMI.General.ListSelection;
-using JMI.General.Sorting;
+﻿using JMI.General.Identifiers;
+using JMI.General.Selections;
 using JMI.General.VM.Commands;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
 
-namespace JMI.General.VM.ListSelection
+namespace JMI.General.VM.Selections
 {
     /// <summary>
     /// Abstract base class for selection collection viewmodels
     /// </summary>
-    /// <typeparam name="T">Type of the model list item</typeparam>
+    /// <typeparam name="T">Type of the selection target item</typeparam>
     /// <typeparam name="TViewModel">Type of the viewmodel list item</typeparam>
-    [Obsolete("Use namespace Selections")]
-    public abstract class SelectionCollectionViewModel<T, TViewModel> : ObservableObject
-        where T : ISelectionCollectionItem
-        where TViewModel : ISelectionCollectionItemViewModel
+    public abstract class SelectionCollectionViewModel<T, TViewModel> : ObservableObject, IDisposable
+        where T : ISelectionTarget
+        where TViewModel : ISelectionItemViewModel
     {
         #region constructors
         /// <summary>
         /// Default constuctor
         /// </summary>
         /// <param name="selectionCollection">Model selection collection containing list items</param>
-        public SelectionCollectionViewModel(ISelectionCollection<T> selectionCollection)
+        protected SelectionCollectionViewModel(ISelectionCollection<T> selectionCollection)
         {
-            collection = selectionCollection ?? throw new ArgumentNullException(nameof(selectionCollection) + " can not be null");
+            collection = selectionCollection;
             collection.CollectionChangeAdded += OnCollectionChangeAdded;
             collection.CollectionChangeRemoved += OnCollectionChangeRemoved;
             collection.CollectionChangeCleared += OnCollectionChangeCleared;
@@ -35,19 +33,17 @@ namespace JMI.General.VM.ListSelection
             AllItems = new ListCollectionView(allItems);
             commandGroupsList = CreateCommandGroups();
             CommandGroups = new ReadOnlyCollection<CommandGroupViewModel>(commandGroupsList);
-
             ShowIdColumn = false;
-            DisplayTextColumnHeader = "Item";
         }
         #endregion
 
         #region properties
         /// <summary>
-        /// Collection for selection collection items
+        /// Collection for selection items
         /// </summary>
-        protected readonly ISelectionCollection<T> collection;
+        protected readonly ISelectionCollection<T> collection;        
         /// <summary>
-        /// Collection for selection collection viewmodel items
+        /// Collection for selection viewmodel items
         /// </summary>
         protected ObservableCollection<TViewModel> allItems;
         /// <summary>
@@ -59,7 +55,7 @@ namespace JMI.General.VM.ListSelection
         /// </summary>
         public ReadOnlyCollection<CommandGroupViewModel> CommandGroups { get; private set; }
         /// <summary>
-        ///  Collectionview for all selection collection list items
+        ///  Collectionview for all selection list items
         /// </summary>
         public ListCollectionView AllItems { get; protected set; }
 
@@ -71,16 +67,6 @@ namespace JMI.General.VM.ListSelection
         {
             get { return showIdColumn; }
             set { SetProperty(ref showIdColumn, value); }
-        }
-
-        private string displayTextColumnHeader;
-        /// <summary>
-        /// Text to display in column header
-        /// </summary>
-        public string DisplayTextColumnHeader
-        {
-            get { return displayTextColumnHeader; }
-            set { SetProperty(ref displayTextColumnHeader, value); }
         }
         #endregion
 
@@ -223,12 +209,23 @@ namespace JMI.General.VM.ListSelection
         #endregion
 
         #region methods
+        public virtual void Dispose()
+        {
+            collection.CollectionChangeAdded -= OnCollectionChangeAdded;
+            collection.CollectionChangeRemoved -= OnCollectionChangeRemoved;
+            collection.CollectionChangeCleared -= OnCollectionChangeCleared;
+            foreach (ISelectionItemViewModel item in allItems)
+            {
+                item.Dispose();
+            }
+        }
+
         /// <summary>
         /// Abstract method for creating list item viewmodel
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        protected abstract TViewModel CreateViewModel(T item);
+        protected abstract TViewModel CreateViewModel(ISelectionItem<T> item);
 
         /// <summary>
         /// Creates following commands:
@@ -299,16 +296,6 @@ namespace JMI.General.VM.ListSelection
         {
             AllItems.SortDescriptions.Clear();
         }
-
-        /// <summary>
-        /// Default sorting for <see cref="AllItems"/>. 
-        /// Uses <see cref="AlphanumComparatorFast"/> on <see cref="ISelectionCollectionItemViewModel.DisplayText"/>.
-        /// </summary>
-        public virtual void SetSorting()
-        {
-            ClearSorting();
-            AllItems.CustomSort = new DefaultSorting();
-        }
         #endregion
 
         #region events
@@ -317,7 +304,7 @@ namespace JMI.General.VM.ListSelection
         #region event handlers
         private void OnCollectionChangeAdded(object sender, SelectionCollectionAddEventArgs<T> e)
         {
-            foreach (T item in e.AddedItems)
+            foreach (ISelectionItem<T> item in e.AddedItems)
             {
                 allItems.Add(CreateViewModel(item));
             }
@@ -325,11 +312,11 @@ namespace JMI.General.VM.ListSelection
 
         private void OnCollectionChangeRemoved(object sender, SelectionCollectionRemoveEventArgs e)
         {
-            foreach (string itemId in e.RemovedItems)
+            foreach (IIdentifier itemId in e.RemovedItems)
             {
-                if (allItems.Any(x => x.Id.Equals(itemId)))
+                if (allItems.Any(x => x.Id.Equals(itemId.Id)))
                 {
-                    allItems.Remove(allItems.First(x => x.Id.Equals(itemId)));
+                    allItems.Remove(allItems.First(x => x.Id.Equals(itemId.Id)));
                 }
             }
         }
@@ -339,22 +326,5 @@ namespace JMI.General.VM.ListSelection
             allItems.Clear();
         }
         #endregion
-
-        private class DefaultSorting : IComparer
-        {
-            public int Compare(object x, object y)
-            {
-                if (!(x is ISelectionCollectionItemViewModel item1))
-                {
-                    return 0;
-                }
-                if (!(y is ISelectionCollectionItemViewModel item2))
-                {
-                    return 0;
-                }
-                AlphanumComparatorFast comp = new AlphanumComparatorFast();
-                return comp.Compare(item1.DisplayText, item2.DisplayText);
-            }
-        }
     }
 }

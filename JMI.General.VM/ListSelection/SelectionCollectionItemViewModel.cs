@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace JMI.General.VM.ListSelection
 {
+    [Obsolete("Use namespace Selections")]
     public abstract class SelectionCollectionItemViewModel : ObservableObject, ISelectionCollectionItemViewModel
     {
         #region constructors
