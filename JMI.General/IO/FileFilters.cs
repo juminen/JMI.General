@@ -12,6 +12,7 @@ namespace JMI.General.IO
         public static IFileFilter Gif = new FileFilter("GIF files", "gif");
         public static IFileFilter Jpeg = new FileFilter("JPEG files", "jpeg");
         public static IFileFilter Jpg = new FileFilter("JPG files", "jpg");
+        public static IFileFilter Pdf = new FileFilter("PDF files", "pdf");
         public static IFileFilter Png = new FileFilter("PNG files", "png");
         public static IFileFilter SQLite = new FileFilter("SQLITE files", "SQLite");
         public static IFileFilter Tiff = new FileFilter("TIFF files", "tiff");
