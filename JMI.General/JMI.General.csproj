@@ -50,6 +50,7 @@
     <Compile Include="Identifiers\Identifier.cs" />
     <Compile Include="Identifiers\IIdentifier.cs" />
     <Compile Include="IO\DirectoryCrawler.cs" />
+    <Compile Include="IO\File.cs" />
     <Compile Include="IO\FileFilter.cs" />
     <Compile Include="IO\FileFilters.cs" />
     <Compile Include="IO\IFileFilter.cs" />
