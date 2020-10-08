@@ -47,8 +47,11 @@
     <Compile Include="ChangeTracking\CustomPropertyTracker.cs" />
     <Compile Include="ChangeTracking\PropertyTracker.cs" />
     <Compile Include="ChangeTracking\StateTracker.cs" />
+    <Compile Include="Identifiers\GuidIdentifier.cs" />
     <Compile Include="Identifiers\Identifier.cs" />
+    <Compile Include="Identifiers\IGuidIdentifier.cs" />
     <Compile Include="Identifiers\IIdentifier.cs" />
+    <Compile Include="Identifiers\StringIdentifier.cs" />
     <Compile Include="IO\DirectoryCrawler.cs" />
     <Compile Include="IO\File.cs" />
     <Compile Include="IO\FileFilter.cs" />
