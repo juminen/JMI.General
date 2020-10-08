@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -105,6 +106,29 @@ namespace JMI.General.View.WPF.IO.Picker
                 SelectedPath = sfd.FileName;
             }
         }
+
+        public bool IsLabelCollapsed
+        {
+            get { return (bool)GetValue(IsLabelCollapsedProperty); }
+            set { SetValue(IsLabelCollapsedProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsLabelCollapsedProperty =
+            DependencyProperty.Register("IsLabelCollapsed", typeof(bool), typeof(FilePicker), new PropertyMetadata(false, IsLabelCollapsedStateChanged));
+
+        private static void IsLabelCollapsedStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            FilePicker pic = d as FilePicker;
+            if (pic.IsLabelCollapsed)
+            {
+                pic.PathLabel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                pic.PathLabel.Visibility = Visibility.Visible;
+            }
+        }
+
     }
 
     public enum PickerMode

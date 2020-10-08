@@ -105,5 +105,28 @@ namespace JMI.General.View.WPF.IO.Picker
                 SelectedPath= ofd.FileName;
             }
         }
+
+        public bool IsLabelCollapsed
+        {
+            get { return (bool)GetValue(IsLabelCollapsedProperty); }
+            set { SetValue(IsLabelCollapsedProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsLabelCollapsedProperty =
+            DependencyProperty.Register("IsLabelCollapsed", typeof(bool), typeof(DirectoryPicker), new PropertyMetadata(false, IsLabelCollapsedStateChanged));
+
+        private static void IsLabelCollapsedStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DirectoryPicker pic = d as DirectoryPicker;
+            if (pic.IsLabelCollapsed)
+            {
+                pic.PathLabel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                pic.PathLabel.Visibility = Visibility.Visible;
+            }
+        }
+
     }
 }

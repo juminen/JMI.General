@@ -19,6 +19,7 @@
         </Grid.ColumnDefinitions>
         <Label
             Grid.Column="0"
+            x:Name="PathLabel"
             Content="{Binding Label,
             UpdateSourceTrigger=PropertyChanged,
             Mode=TwoWay,
