@@ -49,8 +49,11 @@
     <Compile Include="ChangeTracking\StateTracker.cs" />
     <Compile Include="Identifiers\GuidIdentifier.cs" />
     <Compile Include="Identifiers\Identifier.cs" />
+    <Compile Include="Identifiers\IdentityCollection.cs" />
+    <Compile Include="Identifiers\IdentityCollectionEventArgs.cs" />
     <Compile Include="Identifiers\IGuidIdentifier.cs" />
     <Compile Include="Identifiers\IIdentifier.cs" />
+    <Compile Include="Identifiers\IIdentityCollectionItem.cs" />
     <Compile Include="Identifiers\StringIdentifier.cs" />
     <Compile Include="IO\DirectoryCrawler.cs" />
     <Compile Include="IO\File.cs" />
