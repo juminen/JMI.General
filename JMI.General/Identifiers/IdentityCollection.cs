@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace JMI.General.Identifiers
 {
-    public class IdentityCollection<T> : IEnumerable<T> where T : IIdentityCollectionItem
+    public class IdentityCollection<T> : CloseDown, IIdentityCollection<T> where T : IIdentityCollectionItem
     {
         #region constructors
         public IdentityCollection()
@@ -17,7 +17,7 @@ namespace JMI.General.Identifiers
         /// <summary>
         /// Dictionary containing items. Key is <see cref="IIdentifier.Id"/>.
         /// </summary>
-        protected readonly Dictionary<string, T> identityItems;
+        protected  Dictionary<string, T> identityItems;
         /// <summary>
         /// Gets the number of items in collection.
         /// </summary>
@@ -25,11 +25,6 @@ namespace JMI.General.Identifiers
         #endregion
 
         #region methods
-        public void DoSomething()
-        {
-            //tags.Add(new Tag())
-        }
-
         public IEnumerator<T> GetEnumerator()
         {
             return identityItems.Values.GetEnumerator();
@@ -38,6 +33,12 @@ namespace JMI.General.Identifiers
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public override void Close()
+        {
+            identityItems = null;
+            base.Close();
         }
 
         public bool Contains(T item)
@@ -165,15 +166,15 @@ namespace JMI.General.Identifiers
 
         #region events
         /// <summary>
-        /// Event is send when new items are added to collection>.
+        /// Event is sent when new items are added to collection>.
         /// </summary>
         public event EventHandler<IdentityCollectionAddEventArgs<T>> CollectionChangeAdded;
         /// <summary>
-        /// Event is send when items are removed from collection>.
+        /// Event is sent when items are removed from collection>.
         /// </summary>
         public event EventHandler<IdentityCollectionRemoveEventArgs> CollectionChangeRemoved;
         /// <summary>
-        /// Event is send when all items in collection is removed using method <see cref="Clear"/>.
+        /// Event is sent when all items in collection is removed using method <see cref="Clear"/>.
         /// </summary>
         public event EventHandler CollectionChangeCleared;
         #endregion
