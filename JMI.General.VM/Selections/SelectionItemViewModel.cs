@@ -1,10 +1,11 @@
-﻿using JMI.General.Selections;
+﻿using JMI.General.Identifiers;
+using JMI.General.Selections;
 using System;
 
 namespace JMI.General.VM.Selections
 {
     public abstract class SelectionItemViewModel<T> : ObservableObject, ISelectionItemViewModel
-        where T : ISelectionTarget
+        where T : IIdentityCollectionItem
     {
         #region constructors
         protected SelectionItemViewModel(ISelectionItem<T> selectionItem)

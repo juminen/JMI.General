@@ -1,13 +1,13 @@
 ﻿using JMI.General.Identifiers;
 using System;
 
-namespace JMI.General.Selections
+namespace JMI.General.VM.IdentifiersSelection
 {
-    class SelectionItem<T> : ObservableObject, ISelectionItem<T>
+    public class IdentitySelectionListItemViewModel<T> : ObservableObject, IIdentitySelectionListItemViewModel<T>
         where T : IIdentityCollectionItem
     {
         #region constructors
-        public SelectionItem(T target)
+        public IdentitySelectionListItemViewModel(T target)
         {
             Target = target;
         }

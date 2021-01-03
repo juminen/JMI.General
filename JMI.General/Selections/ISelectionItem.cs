@@ -1,8 +1,9 @@
-﻿using System;
+﻿using JMI.General.Identifiers;
+using System;
 
 namespace JMI.General.Selections
 {
-    public interface ISelectionItem<T> where T : ISelectionTarget
+    public interface ISelectionItem<T> where T : IIdentityCollectionItem
     {
         /// <summary>
         /// Target item of the selection.

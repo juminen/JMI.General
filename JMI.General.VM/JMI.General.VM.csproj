@@ -50,6 +50,9 @@
     <Compile Include="CED\DeleteItemViewModel.cs" />
     <Compile Include="Commands\CommandGroupViewModel.cs" />
     <Compile Include="Commands\CommandViewModel.cs" />
+    <Compile Include="IdentifiersSelection\IdentitySelectionListViewModel.cs" />
+    <Compile Include="IdentifiersSelection\IdentitySelectionListItemViewModel.cs" />
+    <Compile Include="IdentifiersSelection\IIdentitySelectionListItemViewModel.cs" />
     <Compile Include="IO\Picker\DirectoryPickerViewModel.cs" />
     <Compile Include="IO\DirectoryTreeViewModel.cs" />
     <Compile Include="IO\DriveTreeItemViewModel.cs" />
@@ -71,6 +74,7 @@
     <Compile Include="Logging\SingletonLogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selections\ISelectionItemViewModel.cs" />
+    <Compile Include="Selections\ReadOnlySelectionCollectionViewModel.cs" />
     <Compile Include="Selections\SelectionCollectionViewModel.cs" />
     <Compile Include="Selections\SelectionItemViewModel.cs" />
   </ItemGroup>

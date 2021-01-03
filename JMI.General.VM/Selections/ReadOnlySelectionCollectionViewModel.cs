@@ -7,14 +7,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
 
+
 namespace JMI.General.VM.Selections
 {
     /// <summary>
-    /// Abstract base class for selection collection viewmodels
+    /// Abstract base class for read only selection collection viewmodels
     /// </summary>
     /// <typeparam name="T">Type of the selection target item</typeparam>
     /// <typeparam name="TViewModel">Type of the viewmodel list item</typeparam>
-    public abstract class SelectionCollectionViewModel<T, TViewModel> : ObservableObject, IDisposable
+    public abstract class ReadOnlySelectionCollectionViewModel<T, TViewModel> : ObservableObject, IDisposable
         where T : IIdentityCollectionItem
         where TViewModel : ISelectionItemViewModel
     {
@@ -23,7 +24,7 @@ namespace JMI.General.VM.Selections
         /// Default constuctor
         /// </summary>
         /// <param name="selectionCollection">Model selection collection containing list items</param>
-        protected SelectionCollectionViewModel(ISelectionCollection<T> selectionCollection)
+        protected ReadOnlySelectionCollectionViewModel(IReadOnlySelectionCollection<T> selectionCollection)
         {
             collection = selectionCollection;
             collection.CollectionChangeAdded += OnCollectionChangeAdded;
@@ -34,6 +35,14 @@ namespace JMI.General.VM.Selections
             commandGroupsList = CreateCommandGroups();
             CommandGroups = new ReadOnlyCollection<CommandGroupViewModel>(commandGroupsList);
             ShowIdColumn = false;
+
+            if (collection.AllItems.Count > 0)
+            {
+                foreach (ISelectionItem<T> item in collection.AllItems)
+                {
+                    CreateViewModel(item);
+                }
+            }
         }
         #endregion
 
@@ -41,7 +50,7 @@ namespace JMI.General.VM.Selections
         /// <summary>
         /// Collection for selection items
         /// </summary>
-        protected readonly ISelectionCollection<T> collection;        
+        protected readonly IReadOnlySelectionCollection<T> collection;
         /// <summary>
         /// Collection for selection viewmodel items
         /// </summary>
@@ -122,23 +131,6 @@ namespace JMI.General.VM.Selections
             }
         }
 
-        private CommandViewModel removeCheckedCommand;
-        public CommandViewModel RemoveCheckedCommand
-        {
-            get
-            {
-                if (removeCheckedCommand == null)
-                {
-                    RelayCommand removeCheckedRelay =
-                        new RelayCommand(
-                            param => collection.RemoveChecked(),
-                            param => collection.CheckedItems.Count > 0);
-                    removeCheckedCommand = new CommandViewModel("Remove checked", removeCheckedRelay);
-                }
-                return removeCheckedCommand;
-            }
-        }
-
         private CommandViewModel checkSelectedCommand;
         public CommandViewModel CheckSelectedCommand
         {
@@ -170,23 +162,6 @@ namespace JMI.General.VM.Selections
                     unCheckSelectedCommand = new CommandViewModel("Uncheck selected", unCheckSelectedRelay);
                 }
                 return unCheckSelectedCommand;
-            }
-        }
-
-        private CommandViewModel clearListCommand;
-        public CommandViewModel ClearListCommand
-        {
-            get
-            {
-                if (clearListCommand == null)
-                {
-                    RelayCommand clearListRelay =
-                        new RelayCommand(
-                            param => collection.RemoveAll(),
-                            param => collection.AllItems.Count > 0);
-                    clearListCommand = new CommandViewModel("Clear list", clearListRelay);
-                }
-                return clearListCommand;
             }
         }
 
@@ -232,10 +207,8 @@ namespace JMI.General.VM.Selections
         /// <para/>- Check all,
         /// <para/>- Uncheck all,
         /// <para/>- Invert Checked,
-        /// <para/>- Remove checked,
         /// <para/>- Check selected,
         /// <para/>- Uncheck selected and
-        /// <para/>- Clear list
         /// </summary>
         /// <returns></returns>
         private IList<CommandViewModel> CreateCommands()
@@ -245,10 +218,8 @@ namespace JMI.General.VM.Selections
                 CheckAllCommand,
                 UnCheckAllCommand,
                 InvertCheckedCommand,
-                RemoveCheckedCommand,
                 CheckSelectedCommand,
-                UnCheckSelectedCommand,
-                ClearListCommand
+                UnCheckSelectedCommand
             };
             return list;
         }

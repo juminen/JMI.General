@@ -7,11 +7,11 @@ using System.Windows.Data;
 
 namespace JMI.General.Selections
 {
-    public class SelectionCollection<T> : ObservableObject, ISelectionCollection<T>
+    public class ReadOnlySelectionCollection<T> : ObservableObject, IReadOnlySelectionCollection<T>
         where T : IIdentityCollectionItem
     {
         #region constructors
-        public SelectionCollection()
+        public ReadOnlySelectionCollection(IReadOnlyIdentityCollection<T> identityCollection)
         {
             allItems = new ObservableCollection<ISelectionItem<T>>();
             AllItems = new ListCollectionView(allItems);
@@ -29,10 +29,23 @@ namespace JMI.General.Selections
                 IsLiveFiltering = true
             };
             SelectedItems.LiveFilteringProperties.Add("IsSelected");
+
+            collection = identityCollection ?? throw new ArgumentNullException(nameof(identityCollection) + " can not be null");
+
+            collection.CollectionChangeAdded += OnCollectionChangeAdded;
+            collection.CollectionChangeRemoved += OnCollectionChangeRemoved;
+            collection.CollectionChangeCleared += OnCollectionChangeCleared;
+
+            if (collection.Count > 0)
+            {
+                Add(collection);
+            }
         }
         #endregion
 
         #region properties
+        protected IReadOnlyIdentityCollection<T> collection;
+
         protected ObservableCollection<ISelectionItem<T>> allItems;
 
         //ListCollectionView is used because live filtering.
@@ -74,75 +87,31 @@ namespace JMI.General.Selections
             }
         }
 
-        public void AddItem(T targetItem)
-        {
-            Add(new List<T>() { targetItem });
-        }
-
-        public void AddRange(IEnumerable<T> targetItems)
-        {
-            Add(targetItems);
-        }
-
-        public void RemoveAll()
+        private void RemoveAll()
         {
             allItems.Clear();
             CollectionChangeCleared?.Invoke(this, EventArgs.Empty);
         }
 
-        private bool Remove(T targetItem, bool sendEvent)
-        {
-            if (allItems.Any(x => x.Target.Identifier.Id.Equals(targetItem.Identifier.Id)))
-            {
-                allItems.Remove(allItems.First(x => x.Target.Identifier.Id.Equals(targetItem.Identifier.Id)));
-                if (sendEvent)
-                {
-                    SelectionCollectionRemoveEventArgs args =
-                        new SelectionCollectionRemoveEventArgs(new List<IIdentifier>() { targetItem.Identifier });
-                    CollectionChangeRemoved?.Invoke(this, args);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public void RemoveRange(IEnumerable<T> targetItems)
+        private void Remove(IEnumerable<IIdentifier> targetIdentifiers)
         {
             List<IIdentifier> removed = new List<IIdentifier>();
-            foreach (T target in targetItems)
+            foreach (IIdentifier item in targetIdentifiers)
             {
-                if (Remove(target, false))
+                if (allItems.Any(x => x.Target.Identifier.Id.Equals(item.Id)))
                 {
-                    removed.Add(target.Identifier);
+                    allItems.Remove(allItems.First(x => x.Target.Identifier.Id.Equals(item.Id)));
+                    removed.Add(item);
                 }
             }
+
             if (removed.Count > 0)
             {
                 SelectionCollectionRemoveEventArgs args =
                     new SelectionCollectionRemoveEventArgs(removed);
                 CollectionChangeRemoved?.Invoke(this, args);
             }
-        }
 
-        public void RemoveChecked()
-        {
-            List<T> removeList = new List<T>();
-            foreach (ISelectionItem<T> selectionItem in CheckedItems)
-            {
-                removeList.Add(selectionItem.Target);
-            }
-            RemoveRange(removeList);
-        }
-
-        public void RemoveSelected()
-        {
-            List<T> removeList = new List<T>();
-            //foreach (T item in SelectedItems)
-            foreach (ISelectionItem<T> selectionItem in SelectedItems)
-            {
-                removeList.Add(selectionItem.Target);
-            }
-            RemoveRange(removeList);
         }
 
         public void CheckAll()
@@ -218,6 +187,20 @@ namespace JMI.General.Selections
         #endregion
 
         #region event handlers
+        private void OnCollectionChangeCleared(object sender, EventArgs e)
+        {
+            RemoveAll();
+        }
+
+        private void OnCollectionChangeRemoved(object sender, IdentityCollectionRemoveEventArgs e)
+        {
+            Remove(e.RemovedItems);
+        }
+
+        private void OnCollectionChangeAdded(object sender, IdentityCollectionAddEventArgs<T> e)
+        {
+            Add(e.AddedItems);
+        }
         #endregion
     }
 }

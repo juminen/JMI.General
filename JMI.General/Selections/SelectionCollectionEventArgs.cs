@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace JMI.General.Selections
 {
     public class SelectionCollectionAddEventArgs<T> : EventArgs 
-        where T : ISelectionTarget
+        where T : IIdentityCollectionItem
     {
         public IEnumerable<ISelectionItem<T>> AddedItems { get; private set; }
         public SelectionCollectionAddEventArgs(IEnumerable<ISelectionItem<T>> addedItems)

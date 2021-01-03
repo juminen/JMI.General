@@ -1,51 +1,59 @@
 ﻿using JMI.General.Identifiers;
-using JMI.General.Selections;
 using JMI.General.VM.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Data;
 
-namespace JMI.General.VM.Selections
+namespace JMI.General.VM.IdentifiersSelection
 {
-    /// <summary>
-    /// Abstract base class for selection collection viewmodels
-    /// </summary>
-    /// <typeparam name="T">Type of the selection target item</typeparam>
-    /// <typeparam name="TViewModel">Type of the viewmodel list item</typeparam>
-    public abstract class SelectionCollectionViewModel<T, TViewModel> : ObservableObject, IDisposable
+    public abstract class IdentitySelectionListViewModel<T, TViewModel> : CloseDown
         where T : IIdentityCollectionItem
-        where TViewModel : ISelectionItemViewModel
+        where TViewModel : IIdentitySelectionListItemViewModel<T>
     {
         #region constructors
-        /// <summary>
-        /// Default constuctor
-        /// </summary>
-        /// <param name="selectionCollection">Model selection collection containing list items</param>
-        protected SelectionCollectionViewModel(ISelectionCollection<T> selectionCollection)
+        public IdentitySelectionListViewModel(IReadOnlyIdentityCollection<T> identityCollection)
         {
-            collection = selectionCollection;
+            collection = identityCollection ?? throw new ArgumentNullException(nameof(identityCollection) + " can not be null");
             collection.CollectionChangeAdded += OnCollectionChangeAdded;
             collection.CollectionChangeRemoved += OnCollectionChangeRemoved;
             collection.CollectionChangeCleared += OnCollectionChangeCleared;
-            allItems = new ObservableCollection<TViewModel>();
+
+            viewModelDictionary = new Dictionary<IIdentifier, Tuple<T, TViewModel>>();
+            allItems = new ObservableCollection<IIdentitySelectionListItemViewModel<T>>();
             AllItems = new ListCollectionView(allItems);
+
+            CheckedItems = new ListCollectionView(allItems)
+            {
+                Filter = new Predicate<object>(IsCheckedFilter),
+                IsLiveFiltering = true
+            };
+            CheckedItems.LiveFilteringProperties.Add("IsChecked");
+
+            SelectedItems = new ListCollectionView(allItems)
+            {
+                Filter = new Predicate<object>(IsSelectedFilter),
+                IsLiveFiltering = true
+            };
+            SelectedItems.LiveFilteringProperties.Add("IsSelected");
+
             commandGroupsList = CreateCommandGroups();
             CommandGroups = new ReadOnlyCollection<CommandGroupViewModel>(commandGroupsList);
-            ShowIdColumn = false;
+
+            CreateViewModels();
         }
         #endregion
 
         #region properties
-        /// <summary>
-        /// Collection for selection items
-        /// </summary>
-        protected readonly ISelectionCollection<T> collection;        
-        /// <summary>
-        /// Collection for selection viewmodel items
-        /// </summary>
-        protected ObservableCollection<TViewModel> allItems;
+        protected IReadOnlyIdentityCollection<T> collection;
+        protected Dictionary<IIdentifier, Tuple<T, TViewModel>> viewModelDictionary;
+
+        protected ObservableCollection<IIdentitySelectionListItemViewModel<T>> allItems;
+
+        public ListCollectionView AllItems { get; protected set; }
+        public ListCollectionView CheckedItems { get; protected set; }
+        public ListCollectionView SelectedItems { get; protected set; }
+
         /// <summary>
         /// Collection for the list commands.
         /// </summary>
@@ -54,20 +62,6 @@ namespace JMI.General.VM.Selections
         /// Collection of command groups
         /// </summary>
         public ReadOnlyCollection<CommandGroupViewModel> CommandGroups { get; private set; }
-        /// <summary>
-        ///  Collectionview for all selection list items
-        /// </summary>
-        public ListCollectionView AllItems { get; protected set; }
-
-        private bool showIdColumn;
-        /// <summary>
-        /// For toggling Id column visibility
-        /// </summary>
-        public bool ShowIdColumn
-        {
-            get { return showIdColumn; }
-            set { SetProperty(ref showIdColumn, value); }
-        }
         #endregion
 
         #region commands
@@ -80,8 +74,8 @@ namespace JMI.General.VM.Selections
                 {
                     RelayCommand checkAllRelay =
                         new RelayCommand(
-                            param => collection.CheckAll(),
-                            param => collection.AllItems.Count > 0);
+                            param => CheckAll(),
+                            param => AllItems.Count > 0);
                     checkAllCommand = new CommandViewModel("Check all", checkAllRelay);
                 }
                 return checkAllCommand;
@@ -97,8 +91,8 @@ namespace JMI.General.VM.Selections
                 {
                     RelayCommand unCheckAllRelay =
                         new RelayCommand(
-                            param => collection.UnCheckAll(),
-                            param => collection.CheckedItems.Count > 0);
+                            param => UnCheckAll(),
+                            param => CheckedItems.Count > 0);
                     unCheckAllCommand = new CommandViewModel("Uncheck all", unCheckAllRelay);
                 }
                 return unCheckAllCommand;
@@ -114,28 +108,11 @@ namespace JMI.General.VM.Selections
                 {
                     RelayCommand invertCheckedRelay =
                         new RelayCommand(
-                            param => collection.InvertChecked(),
-                            param => collection.AllItems.Count > 0);
+                            param => InvertChecked(),
+                            param => AllItems.Count > 0);
                     invertCheckedCommand = new CommandViewModel("Invert checked", invertCheckedRelay);
                 }
                 return invertCheckedCommand;
-            }
-        }
-
-        private CommandViewModel removeCheckedCommand;
-        public CommandViewModel RemoveCheckedCommand
-        {
-            get
-            {
-                if (removeCheckedCommand == null)
-                {
-                    RelayCommand removeCheckedRelay =
-                        new RelayCommand(
-                            param => collection.RemoveChecked(),
-                            param => collection.CheckedItems.Count > 0);
-                    removeCheckedCommand = new CommandViewModel("Remove checked", removeCheckedRelay);
-                }
-                return removeCheckedCommand;
             }
         }
 
@@ -148,8 +125,8 @@ namespace JMI.General.VM.Selections
                 {
                     RelayCommand checkSelectedRelay =
                         new RelayCommand(
-                            param => collection.CheckSelected(),
-                            param => collection.SelectedItems.Count > 0);
+                            param => CheckSelected(),
+                            param => SelectedItems.Count > 0);
                     checkSelectedCommand = new CommandViewModel("Check selected", checkSelectedRelay);
                 }
                 return checkSelectedCommand;
@@ -165,28 +142,11 @@ namespace JMI.General.VM.Selections
                 {
                     RelayCommand unCheckSelectedRelay =
                         new RelayCommand(
-                            param => collection.UnCheckSelected(),
-                            param => collection.SelectedItems.Count > 0);
+                            param => UnCheckSelected(),
+                            param => SelectedItems.Count > 0);
                     unCheckSelectedCommand = new CommandViewModel("Uncheck selected", unCheckSelectedRelay);
                 }
                 return unCheckSelectedCommand;
-            }
-        }
-
-        private CommandViewModel clearListCommand;
-        public CommandViewModel ClearListCommand
-        {
-            get
-            {
-                if (clearListCommand == null)
-                {
-                    RelayCommand clearListRelay =
-                        new RelayCommand(
-                            param => collection.RemoveAll(),
-                            param => collection.AllItems.Count > 0);
-                    clearListCommand = new CommandViewModel("Clear list", clearListRelay);
-                }
-                return clearListCommand;
             }
         }
 
@@ -209,33 +169,110 @@ namespace JMI.General.VM.Selections
         #endregion
 
         #region methods
-        public virtual void Dispose()
+        protected abstract TViewModel CreateViewModel(T item);
+
+        public override void Close()
         {
             collection.CollectionChangeAdded -= OnCollectionChangeAdded;
             collection.CollectionChangeRemoved -= OnCollectionChangeRemoved;
             collection.CollectionChangeCleared -= OnCollectionChangeCleared;
-            foreach (ISelectionItemViewModel item in allItems)
+            collection = null;
+
+            allItems.Clear();
+            allItems = null;
+            viewModelDictionary.Clear();
+            viewModelDictionary = null;
+            
+            base.Close();
+        }
+
+        private bool IsCheckedFilter(object obj)
+        {
+            return ((IIdentitySelectionListItemViewModel<T>)obj).IsChecked;
+        }
+
+        private bool IsSelectedFilter(object obj)
+        {
+            return ((IIdentitySelectionListItemViewModel<T>)obj).IsSelected;
+        }
+
+        public void CheckAll()
+        {
+            foreach (IIdentitySelectionListItemViewModel<T> item in allItems)
             {
-                item.Dispose();
+                item.IsChecked = true;
             }
         }
 
-        /// <summary>
-        /// Abstract method for creating list item viewmodel
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        protected abstract TViewModel CreateViewModel(ISelectionItem<T> item);
+        public void UnCheckAll()
+        {
+            foreach (IIdentitySelectionListItemViewModel<T> item in allItems)
+            {
+                item.IsChecked = false;
+            }
+        }
+
+        public void InvertChecked()
+        {
+            foreach (IIdentitySelectionListItemViewModel<T> item in allItems)
+            {
+                item.IsChecked = !item.IsChecked;
+            }
+        }
+
+        public void CheckSelected()
+        {
+            foreach (IIdentitySelectionListItemViewModel<T> item in SelectedItems)
+            {
+                item.IsChecked = true;
+            }
+        }
+
+        public void UnCheckSelected()
+        {
+            foreach (IIdentitySelectionListItemViewModel<T> item in SelectedItems)
+            {
+                item.IsChecked = false;
+            }
+        }
+
+        public IEnumerable<T> GetAllTargetItems()
+        {
+            List<T> list = new List<T>();
+            foreach (IIdentitySelectionListItemViewModel<T> selectionItem in AllItems)
+            {
+                list.Add(selectionItem.Target);
+            }
+            return list;
+        }
+
+        public IEnumerable<T> GetCheckedTargetItems()
+        {
+            List<T> list = new List<T>();
+            foreach (IIdentitySelectionListItemViewModel<T> selectionItem in CheckedItems)
+            {
+                list.Add(selectionItem.Target);
+            }
+            return list;
+        }
+
+        public IEnumerable<T> GetSelectedTargetItems()
+        {
+            List<T> list = new List<T>();
+            foreach (IIdentitySelectionListItemViewModel<T> selectionItem in SelectedItems)
+            {
+                list.Add(selectionItem.Target);
+            }
+            return list;
+        }
 
         /// <summary>
         /// Creates following commands:
         /// <para/>- Check all,
         /// <para/>- Uncheck all,
         /// <para/>- Invert Checked,
-        /// <para/>- Remove checked,
         /// <para/>- Check selected,
         /// <para/>- Uncheck selected and
-        /// <para/>- Clear list
         /// </summary>
         /// <returns></returns>
         private IList<CommandViewModel> CreateCommands()
@@ -245,10 +282,8 @@ namespace JMI.General.VM.Selections
                 CheckAllCommand,
                 UnCheckAllCommand,
                 InvertCheckedCommand,
-                RemoveCheckedCommand,
                 CheckSelectedCommand,
-                UnCheckSelectedCommand,
-                ClearListCommand
+                UnCheckSelectedCommand
             };
             return list;
         }
@@ -296,34 +331,46 @@ namespace JMI.General.VM.Selections
         {
             AllItems.SortDescriptions.Clear();
         }
+
+        private void CreateViewModels()
+        {
+            foreach (T item in collection)
+            {
+                TViewModel vm = CreateViewModel(item);
+                viewModelDictionary.Add(vm.Target.Identifier, new Tuple<T, TViewModel>(vm.Target, vm));
+                allItems.Add(vm);
+            }
+        }
         #endregion
 
         #region events
         #endregion
 
         #region event handlers
-        private void OnCollectionChangeAdded(object sender, SelectionCollectionAddEventArgs<T> e)
-        {
-            foreach (ISelectionItem<T> item in e.AddedItems)
-            {
-                allItems.Add(CreateViewModel(item));
-            }
-        }
-
-        private void OnCollectionChangeRemoved(object sender, SelectionCollectionRemoveEventArgs e)
-        {
-            foreach (IIdentifier itemId in e.RemovedItems)
-            {
-                if (allItems.Any(x => x.Id.Equals(itemId.Id)))
-                {
-                    allItems.Remove(allItems.First(x => x.Id.Equals(itemId.Id)));
-                }
-            }
-        }
-
         private void OnCollectionChangeCleared(object sender, EventArgs e)
         {
+            viewModelDictionary.Clear();
             allItems.Clear();
+        }
+
+        private void OnCollectionChangeRemoved(object sender, IdentityCollectionRemoveEventArgs e)
+        {
+            foreach (T item in e.RemovedItems)
+            {
+                TViewModel vm = viewModelDictionary[item.Identifier].Item2;
+                allItems.Remove(vm);
+                viewModelDictionary.Remove(item.Identifier);
+            }
+        }
+
+        private void OnCollectionChangeAdded(object sender, IdentityCollectionAddEventArgs<T> e)
+        {
+            foreach (T item in e.AddedItems)
+            {
+                TViewModel vm = CreateViewModel(item);
+                viewModelDictionary.Add(item.Identifier, new Tuple<T, TViewModel>(item, vm));
+                allItems.Add(vm);
+            }
         }
         #endregion
     }

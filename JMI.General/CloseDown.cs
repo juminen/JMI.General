@@ -2,13 +2,33 @@
 
 namespace JMI.General
 {
-    public abstract class CloseDown : ICloseDown
+    public abstract class CloseDown : ObservableObject, ICloseDown
     {
         /// <summary>
-        /// Sends event <see cref="CloseRequested"/>.
+        /// Default constructor, property <see cref="CloseCalled"/> is set to false.
+        /// </summary>
+        public CloseDown()
+        {
+            CloseCalled = false;
+        }
+
+        private bool closeCalled;
+        /// <summary>
+        /// If method <see cref="Close"/> is called, this property is set to true.
+        /// </summary>
+        public bool CloseCalled
+        {
+            get { return closeCalled; }
+            private set { SetProperty(ref closeCalled, value); }
+        }
+
+
+        /// <summary>
+        /// Sets property <see cref="CloseCalled"/> to true and sends event <see cref="CloseRequested"/>.
         /// </summary>
         public virtual void Close()
         {
+            CloseCalled = true;
             CloseRequested?.Invoke(this, EventArgs.Empty);
         }
 
