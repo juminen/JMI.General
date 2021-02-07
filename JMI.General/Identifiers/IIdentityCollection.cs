@@ -28,5 +28,12 @@ namespace JMI.General.Identifiers
         /// </summary>
         /// <param name="items">Items to remove from collection.</param>
         void RemoveRange(IEnumerable<T> items);
+        /// <summary>
+        /// Get item from collection using item identifier.
+        /// </summary>
+        /// <param name="identifier">Identifier of the wanted item</param>
+        /// <returns>Item with given identifier. 
+        /// If item with given identifier does not found from collection, <see cref="ActionResult{T}.Result"/> is null.</returns>
+        ActionResult<T> GetItem(IIdentifier identifier);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace JMI.General.Identifiers
 {
@@ -27,6 +28,10 @@ namespace JMI.General.Identifiers
         #region methods
         public IEnumerator<T> GetEnumerator()
         {
+            if (CloseCalled)
+            {
+                Enumerable.Empty<T>().GetEnumerator();
+            }
             return identityItems.Values.GetEnumerator();
         }
 
@@ -161,6 +166,26 @@ namespace JMI.General.Identifiers
         {
             identityItems.Clear();
             CollectionChangeCleared?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Get item from collection using item identifier.
+        /// </summary>
+        /// <param name="identifier">Identifier of the wanted item</param>
+        /// <returns>Item with given identifier. 
+        /// If item with given identifier does not found from collection, <see cref="ActionResult{T}.Result"/> is null.</returns>
+        public ActionResult<T> GetItem(IIdentifier identifier)
+        {
+            ActionResult<T> ar = new ActionResult<T>();
+            if (identityItems.ContainsKey(identifier.Id))
+            {
+                ar.Result = identityItems[identifier.Id];
+            }
+            else
+            {
+                ar.AddFailReason($"Collection did not contain item with identifier {identifier.Id}");
+            }
+            return ar;
         }
         #endregion
 

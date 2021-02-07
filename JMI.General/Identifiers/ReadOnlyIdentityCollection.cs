@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 namespace JMI.General.Identifiers
 {
+    /// <summary>
+    /// Class that follows collection given in constructor. 
+    /// </summary>
+    /// <typeparam name="T">Type of item in collection</typeparam>
     public class ReadOnlyIdentityCollection<T> : CloseDown, IReadOnlyIdentityCollection<T> where T : IIdentityCollectionItem
     {
         #region constructors
@@ -18,7 +22,7 @@ namespace JMI.General.Identifiers
 
         #region properties
         /// <summary>
-        /// Dictionary containing items. Key is <see cref="IIdentifier.Id"/>.
+        /// Collection containing items.
         /// </summary>
         protected IdentityCollection<T> identityCollection;
         /// <summary>
@@ -52,10 +56,10 @@ namespace JMI.General.Identifiers
         {
             if (identityCollection != null)
             {
-                identityCollection = null;
                 identityCollection.CollectionChangeAdded -= IdentityCollection_CollectionChangeAdded;
                 identityCollection.CollectionChangeRemoved -= IdentityCollection_CollectionChangeRemoved;
                 identityCollection.CollectionChangeCleared -= IdentityCollection_CollectionChangeCleared;
+                identityCollection = null;
             }
             base.Close();
         }

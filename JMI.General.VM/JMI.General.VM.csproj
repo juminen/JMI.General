@@ -77,6 +77,10 @@
     <Compile Include="Selections\ReadOnlySelectionCollectionViewModel.cs" />
     <Compile Include="Selections\SelectionCollectionViewModel.cs" />
     <Compile Include="Selections\SelectionItemViewModel.cs" />
+    <Compile Include="Trees\IdentityTreeItemViewModel.cs" />
+    <Compile Include="Trees\IdentityTreeViewModel.cs" />
+    <Compile Include="Trees\IIdentityTreeItemViewModel.cs" />
+    <Compile Include="Trees\TreeItemNameComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JMI.General\JMI.General.csproj">

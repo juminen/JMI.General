@@ -55,10 +55,14 @@
     <Compile Include="Identifiers\Identifier.cs" />
     <Compile Include="Identifiers\IdentityCollection.cs" />
     <Compile Include="Identifiers\IdentityCollectionEventArgs.cs" />
+    <Compile Include="Identifiers\IdentityTreeItem.cs" />
+    <Compile Include="Identifiers\IdentityTreeItemParentChangedEventArgs.cs" />
     <Compile Include="Identifiers\IGuidIdentifier.cs" />
     <Compile Include="Identifiers\IIdentifier.cs" />
     <Compile Include="Identifiers\IIdentityCollection.cs" />
     <Compile Include="Identifiers\IIdentityCollectionItem.cs" />
+    <Compile Include="Identifiers\IIdentityTreeManager.cs" />
+    <Compile Include="Identifiers\IIdentityTreeItem.cs" />
     <Compile Include="Identifiers\IReadOnlyIdentityCollection.cs" />
     <Compile Include="Identifiers\ReadOnlyIdentityCollection.cs" />
     <Compile Include="Identifiers\StringIdentifier.cs" />
