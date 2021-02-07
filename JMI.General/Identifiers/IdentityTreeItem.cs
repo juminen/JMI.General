@@ -37,7 +37,7 @@ namespace JMI.General.Identifiers
         /// <summary>
         /// Description of the tree item.
         /// </summary>
-        public string Description
+        public virtual string Description
         {
             get { return description; }
             set { SetProperty(ref description, value); }
