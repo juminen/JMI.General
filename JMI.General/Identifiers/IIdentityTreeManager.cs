@@ -37,7 +37,7 @@ namespace JMI.General.Identifiers
         /// tree item is set to <see cref="ActionResult{T}.Result"/></returns>
         Task<bool> CreateCopyAsync(
             T itemToCopy,
-            bool copyDescendats,
+            bool copyDescendants,
             T parentOfNewCopy);
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace JMI.General.Identifiers
         /// tree item is set to <see cref="ActionResult{T}.Result"/></returns>
         Task<bool> CreateCopyAsync(
             T itemToCopy,
-            bool copyDescendats);
+            bool copyDescendants);
 
         /// <summary>
         /// Moves tree item to under new parent.
