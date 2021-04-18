@@ -2,7 +2,7 @@
 
 namespace JMI.General.Identifiers
 {
-    public abstract class IdentityTreeItem<T> : ObservableObject, IIdentityTreeItem<T> 
+    public abstract class IdentityTreeItem<T> : ObservableObject, IIdentityTreeItem<T>
         where T : IIdentityTreeItem<T>
     {
         #region constructors
@@ -66,6 +66,21 @@ namespace JMI.General.Identifiers
             }
         }
 
+        /// <summary>
+        /// Returns tree item depth in the tree. For root item level is 0.
+        /// </summary>
+        public int Level
+        {
+            get
+            {
+                if (Parent == null)
+                {
+                    return 0;
+                }
+                return Parent.Level + 1;
+            }
+        }
+
         private T parent;
         /// <summary>
         /// Parent of the tree item. 
@@ -87,6 +102,8 @@ namespace JMI.General.Identifiers
                             NewParent = newParent
                         };
                     ParentChanged?.Invoke(this, args);
+                    OnPropertyChanged(nameof(Level));
+                    OnPropertyChanged(nameof(FullPath));
                 }
             }
         }

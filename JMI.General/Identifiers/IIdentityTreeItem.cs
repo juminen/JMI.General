@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace JMI.General.Identifiers
 {
-    public interface IIdentityTreeItem<T> : IIdentityCollectionItem, INotifyPropertyChanged where T: IIdentityTreeItem<T>
+    public interface IIdentityTreeItem<T> : IIdentityCollectionItem, INotifyPropertyChanged where T : IIdentityTreeItem<T>
     {
         /// <summary>
         /// Name of the tree item.
@@ -19,10 +19,14 @@ namespace JMI.General.Identifiers
         /// </summary>
         string FullPath { get; }
         /// <summary>
+        /// Returns tree item depth in the tree. For root item level is 0.
+        /// </summary>
+        int Level { get; }
+        /// <summary>
         /// Parent of the tree item. 
         /// When parent is changed, event <see cref="ParentChanged"/> is sent.
         /// </summary>
-        T Parent { get; }
+        T Parent { get; set; }
         /// <summary>
         /// Collection of child items.
         /// </summary>
