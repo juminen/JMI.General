@@ -52,6 +52,8 @@
     <Compile Include="Commands\CommandGroupListView.xaml.cs">
       <DependentUpon>CommandGroupListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\LevelToLeftMarginConverter.cs" />
     <Compile Include="IO\DirectoryTreeView.xaml.cs">
       <DependentUpon>DirectoryTreeView.xaml</DependentUpon>
     </Compile>
