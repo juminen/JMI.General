@@ -355,11 +355,11 @@ namespace JMI.General.VM.IdentifiersSelection
 
         private void OnCollectionChangeRemoved(object sender, IdentityCollectionRemoveEventArgs e)
         {
-            foreach (T item in e.RemovedItems)
+            foreach (IIdentifier item in e.RemovedItems)
             {
-                TViewModel vm = viewModelDictionary[item.Identifier].Item2;
+                TViewModel vm = viewModelDictionary[item].Item2;
                 allItems.Remove(vm);
-                viewModelDictionary.Remove(item.Identifier);
+                viewModelDictionary.Remove(item);
             }
         }
 
